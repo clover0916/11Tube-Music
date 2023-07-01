@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Youtube Music (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Youtube Music (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
