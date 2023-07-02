@@ -18,8 +18,12 @@ using Windows.UI.WebUI;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Hosting;
 using Windows.UI.Composition;
+using Windows.Storage;
+using ElevenTube_Music.Settings.Types;
+using System.Diagnostics;
+using Microsoft.UI.Windowing;
 
-namespace Youtube_Music
+namespace ElevenTube_Music
 {
 
     public sealed partial class MainWindow : Window
@@ -48,7 +52,6 @@ namespace Youtube_Music
             appWindow.TitleBar.ButtonHoverForegroundColor = w1;
             appWindow.TitleBar.ButtonPressedForegroundColor = w1;
 
-            ContentFrame.Navigate(typeof(MainPage));
             NavigationViewControl.SelectedItem = NavigationViewControl.MenuItems[0];
         }
 
@@ -58,25 +61,23 @@ namespace Youtube_Music
             if (args.InvokedItemContainer != null)
             {
                 var tag = args.InvokedItemContainer.Tag.ToString();
-                Frame mainFrame = (Frame)ContentFrame;
-                MainPage mainPage = (MainPage)mainFrame.Content;
-                mainPage.ControlWebView(tag);
+                ControlWebView(tag);
             }
         }
 
         private void NavigationViewControl_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
         {
-            if (ContentFrame.CanGoBack) ContentFrame.GoBack();
-        }
-
-        public void Navigation_Back_Enable(bool isEnable)
-        {
-            NavigationViewControl.IsBackEnabled = true;
-        }
-
-        private void ContentFrame_Navigated(object sender, NavigationEventArgs e)
-        {
-            NavigationViewControl.IsBackEnabled = ContentFrame.CanGoBack;
+			WebView.GoBack();
+			if (WebView.Source.AbsoluteUri.Contains("music.youtube.com/"))
+			{
+				NavigationViewControl.SelectedItem = NavigationViewControl.MenuItems[0];
+			} else if (WebView.Source.AbsoluteUri.Contains("music.youtube.com/explore"))
+			{
+				NavigationViewControl.SelectedItem = NavigationViewControl.MenuItems[1];
+			} else if (WebView.Source.AbsoluteUri.Contains("music.youtube.com/library"))
+			{
+				  NavigationViewControl.SelectedItem = NavigationViewControl.MenuItems[2];
+			}
         }
 
         private void Open_Setting(object sender, RoutedEventArgs e)
@@ -102,7 +103,83 @@ namespace Youtube_Music
             appWindow.TitleBar.ButtonHoverForegroundColor = w1;
             appWindow.TitleBar.ButtonPressedForegroundColor = w1;
             appWindow.Resize(new Windows.Graphics.SizeInt32(1080, 640));
-            settingsWindow.Activate();
+            appWindow.Show();
+        }
+
+        private async void WebView_NavigationCompleted(WebView2 sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs args)
+        {
+			NavigationViewControl.IsBackEnabled = true;
+
+            loadingBar.Visibility = Visibility.Collapsed;
+            WebView.Visibility = Visibility.Visible;
+            await Task.Delay(500);
+            WebView.Opacity = 1;
+            await WebView.ExecuteScriptAsync(@"
+                const hideElements = [
+                    { tabId: 'SPunlimited' },
+                    { tabId: 'FEmusic_home' },
+                    { tabId: 'FEmusic_explore' },
+                    { tabId: 'FEmusic_library_landing' }
+                ];
+
+                hideElements.forEach(element => {
+                    const elements = document.querySelectorAll('[tab-id=' + element.tabId + ']');
+                    elements.forEach(element => {
+                        element.style.display = 'none';
+                    });
+                });
+            ");
+        }
+
+        public async void ControlWebView(string tag)
+        {
+            if (tag == "home")
+            {
+                await WebView.ExecuteScriptAsync("document.querySelector('[tab-id=\"FEmusic_home\"]').click();");
+            }
+            else if (tag == "explore")
+            {
+                await WebView.ExecuteScriptAsync("document.querySelector('[tab-id=\"FEmusic_explore\"]').click();");
+            }
+            else if (tag == "library")
+            {
+                await WebView.ExecuteScriptAsync("document.querySelector('[tab-id=\"FEmusic_library_landing\"]').click();");
+            }
+        }
+
+        private async void WebView_NavigationStarting(WebView2 sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs args)
+        {
+            StorageFolder pluginsFolder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Plugins");
+            IReadOnlyList<StorageFolder> subfolders = await pluginsFolder.GetFoldersAsync();
+
+            foreach (StorageFolder subfolder in subfolders)
+            {
+                StorageFile config = await subfolder.GetFileAsync("config.json");
+                string config_json = await FileIO.ReadTextAsync(config);
+                PluginConfig pluginConfig = Newtonsoft.Json.JsonConvert.DeserializeObject<PluginConfig>(config_json);
+                
+                if (Plugin_IsEnabled(pluginConfig.name))
+                {
+                    Debug.WriteLine("Enabled");
+                    StorageFile file = await subfolder.GetFileAsync("index.js");
+                    string text = await FileIO.ReadTextAsync(file);
+                    await sender.CoreWebView2.ExecuteScriptAsync(text);
+                }
+                Debug.WriteLine(subfolder.Name);
+            }
+        }
+
+        private bool Plugin_IsEnabled(string pluginName)
+        {
+            ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            if (localSettings.Values[pluginName] != null)
+            {
+                return (bool)localSettings.Values[pluginName];
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
