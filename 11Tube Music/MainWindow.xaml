@@ -26,22 +26,62 @@
                 <NavigationViewItem Content="Library" Tag="library" Icon="Library" />
             </NavigationView.MenuItems>
             <NavigationView.PaneFooter>
-                <Button Margin="4,8" Background="Transparent" BorderBrush="Transparent" Click="Open_Setting">
-                    <Button.Content>
-                        <AnimatedIcon x:Name='AnimatedIcon'>
-                            <AnimatedIcon.Source>
-                                <animatedvisuals:AnimatedSettingsVisualSource/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" x:Name="openPluginsButton" Margin="4,8" Background="Transparent" Click="Open_Plugins_Flyout" IsEnabled="False">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="Loading" Foreground="White" FontSize="14px" x:Name="PluginLoadingText"/>
+                                <ProgressRing IsActive="True" Height="16px" Margin="8,0,0,0" Width="16px" x:Name="PluginLoading"/>
+                                <FontIcon Glyph="&#xE73E;" FontSize="16px" Margin="8,0,0,0" Visibility="Collapsed" x:Name="pluginLoadedCheck"/>
+                            </StackPanel>
+                        </Button.Content>
+                        <Button.Flyout>
+                            <Flyout x:Name="PluginFlyout" Placement="BottomEdgeAlignedRight" >
+                                <StackPanel x:Name="PluginList" Orientation="Vertical" Width="200px">
+                                </StackPanel>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+                    <Button Grid.Column="1" Margin="4,8" Padding="8" Background="Transparent" IsEnabled="{x:Bind Volume_Button_IsEnabled}">
+                        <Button.Content>
+                            <FontIcon Glyph="&#xE767;" FontSize="16px" x:Name="Volume_State"/>
+                        </Button.Content>
+                        <Button.Flyout>
+                            <Flyout>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Padding="12" Margin="0,0,10,0" Background="Transparent" Click="Toggle_Mute">
+                                        <FontIcon x:Name="Volume_State_Flyout" Glyph="&#xE767;"  FontSize="16px"/>
+                                    </Button>
+                                    <Slider x:Name="volumeSlider" Value="{x:Bind Volume}" Maximum="100" Minimum="0" VerticalAlignment="Center" ValueChanged="Volume_Changed" Width="200"/>
+                                </StackPanel>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+                    <Button Grid.Column="3" Margin="4,8" Background="Transparent" Click="Open_Setting">
+                        <Button.Content>
+                            <AnimatedIcon x:Name='AnimatedIcon'>
+                                <AnimatedIcon.Source>
+                                    <animatedvisuals:AnimatedSettingsVisualSource/>
                             </AnimatedIcon.Source>
                             <AnimatedIcon.FallbackIconSource>
-                                <FontIconSource FontFamily="Segoe MDL2 Assets" Glyph="&#xE713;"/>
-                            </AnimatedIcon.FallbackIconSource>
-                        </AnimatedIcon>
-                    </Button.Content>
-                </Button>
+                                    <FontIconSource FontFamily="Segoe MDL2 Assets" Glyph="&#xE713;"/>
+                                </AnimatedIcon.FallbackIconSource>
+                            </AnimatedIcon>
+                        </Button.Content>
+                    </Button>
+                </Grid>
             </NavigationView.PaneFooter>
             <Grid>
-                <ProgressBar x:Name="loadingBar"  Width="130" IsIndeterminate="True" />
-                <controls:WebView2 x:Name="WebView" Source="https://music.youtube.com" NavigationStarting="WebView_NavigationStarting" NavigationCompleted="WebView_NavigationCompleted" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Visibility="Collapsed" Opacity="0" />
+                <StackPanel x:Name="loadingBar" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock Text="Loading..." Foreground="White" FontSize="16px" Padding="0,0,0,16" HorizontalAlignment="Center"/>
+                    <ProgressBar Width="130" IsIndeterminate="True" />
+                </StackPanel>
+                <controls:WebView2 x:Name="WebView" Source="https://music.youtube.com" NavigationStarting="WebView_NavigationStarting" CoreWebView2Initialized="WebView_CoreWebView2Initialized" NavigationCompleted="WebView_NavigationCompleted" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Visibility="Collapsed" Opacity="0" />
             </Grid>
         </NavigationView>
     </Grid>

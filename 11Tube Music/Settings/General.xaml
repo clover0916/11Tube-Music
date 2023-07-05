@@ -6,6 +6,7 @@
     xmlns:local="using:ElevenTube_Music.Settings"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:labs="using:CommunityToolkit.Labs.WinUI"
     mc:Ignorable="d">
     <Page.Resources>
         <!--  These styles can be referenced to create a consistent SettingsPage layout  -->
@@ -43,7 +44,15 @@
             VerticalScrollBarVisibility="Auto"
             VerticalScrollMode="Auto">
             <StackPanel Spacing="{StaticResource SettingsCardSpacing}" Padding="0,16,0,0">
-                
+                <labs:SettingsCard x:Name="restartCard" Header="Restart to apply settings" Background="#433519" Visibility="Collapsed">
+                    <labs:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xF167;" Foreground="Yellow" />
+                    </labs:SettingsCard.HeaderIcon>
+                    <Button x:Name="restartButton" Content="Restart" Click="RestartButton_Click" />
+                </labs:SettingsCard>
+                <labs:SettingsCard Header="Save previous session">
+                    <ToggleSwitch x:Name="SaveSessionToggle" Tag="save_previous_session" IsOn="{x:Bind IsSaveSession, Mode=TwoWay}"/>
+                </labs:SettingsCard>
             </StackPanel>
         </ScrollViewer>
     </Grid>

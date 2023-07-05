@@ -1,4 +1,5 @@
 {
+  "type": "Javasctipt",
   "name": "AdBlocker",
   "description": "Blocks ads on Youtube Music",
   "version": "1.0.0",
@@ -14,5 +15,5 @@
         "url": "https://github.com/clover0916"
       }
     ]
-   }
+  }
 }

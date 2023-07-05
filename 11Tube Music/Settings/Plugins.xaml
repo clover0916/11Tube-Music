@@ -49,7 +49,7 @@
                     <labs:SettingsCard.HeaderIcon>
                         <FontIcon Glyph="&#xF167;" Foreground="Yellow" />
                     </labs:SettingsCard.HeaderIcon>
-                    <Button x:Name="restartButton" Content="Restart" Click="restartButton_Click" />
+                    <Button x:Name="restartButton" Content="Restart" Click="RestartButton_Click" />
                 </labs:SettingsCard>
                 <StackPanel x:Name="SettingsContainer">
                     <!-- ここに動的に生成される設定UIが追加されます -->

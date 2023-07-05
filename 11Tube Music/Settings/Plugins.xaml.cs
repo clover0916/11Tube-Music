@@ -46,37 +46,51 @@ namespace ElevenTube_Music.Settings
 
         private void Add_SettingsExpander(PluginConfig pluginConfig)
         {
-            var expander = new SettingsExpander();
-            expander.Header = pluginConfig.name;
-            expander.Description = pluginConfig.description;
+            var expander = new SettingsExpander
+            {
+                Header = pluginConfig.name,
+                Description = pluginConfig.description
+            };
 
-            var versionCard = new SettingsCard();
-            versionCard.Header = "Version";
-            var versionText = new TextBlock();
-            versionText.IsTextSelectionEnabled = true;
-            versionText.Text = pluginConfig.version;
+            var versionCard = new SettingsCard
+            {
+                Header = "Version"
+            };
+            var versionText = new TextBlock
+            {
+                IsTextSelectionEnabled = true,
+                Text = pluginConfig.version
+            };
             versionCard.Content = versionText;
             expander.Items.Add(versionCard);
 
-            var authorCard = new SettingsCard();
-            authorCard.Header = "Author";
-            var authorStackPanel = new StackPanel();
-            authorStackPanel.Orientation = Orientation.Horizontal;
-            authorStackPanel.VerticalAlignment = VerticalAlignment.Center;
+            var authorCard = new SettingsCard
+            {
+                Header = "Author"
+            };
+            var authorStackPanel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Center
+            };
 
-            var authorText = new TextBlock();
-            authorText.Margin = new Thickness(0, 0, 8, 0);
-            authorText.IsTextSelectionEnabled = true;
-            authorText.VerticalAlignment = VerticalAlignment.Center;
-            authorText.Text = pluginConfig.author.name;
+            var authorText = new TextBlock
+            {
+                Margin = new Thickness(0, 0, 8, 0),
+                IsTextSelectionEnabled = true,
+                VerticalAlignment = VerticalAlignment.Center,
+                Text = pluginConfig.author.name
+            };
             authorStackPanel.Children.Add(authorText);
 
             pluginConfig.author.contact.ForEach(contact =>
             {
-                var Link = new HyperlinkButton();
-                Link.Margin = new Thickness(8, 0, 0, 0);
-                Link.Content = contact.name;
-                Link.NavigateUri = new Uri(contact.url);
+                var Link = new HyperlinkButton
+                {
+                    Margin = new Thickness(8, 0, 0, 0),
+                    Content = contact.name,
+                    NavigateUri = new Uri(contact.url)
+                };
                 authorStackPanel.Children.Add(Link);
             });
 
@@ -102,7 +116,7 @@ namespace ElevenTube_Music.Settings
             SaveSetting(expander.Header.ToString(), toggleSwitch.IsOn);
         }
 
-        private bool LoadPreviousSetting(string pluginName)
+        private static bool LoadPreviousSetting(string pluginName)
         {
             ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
             if (localSettings.Values[pluginName] != null)
@@ -115,13 +129,13 @@ namespace ElevenTube_Music.Settings
             }
         }
 
-        private void SaveSetting(string pluginName, bool settingValue)
+        private static void SaveSetting(string pluginName, bool settingValue)
         {
             ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
             localSettings.Values[pluginName] = settingValue;
         }
 
-        private void restartButton_Click(object sender, RoutedEventArgs e)
+        private void RestartButton_Click(object sender, RoutedEventArgs e)
         {
             Microsoft.Windows.AppLifecycle.AppInstance.Restart("");
         }
