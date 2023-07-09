@@ -6,6 +6,9 @@ namespace ElevenTube_Music.Settings.Types
     {
         public string type { get; set; }
         public string name { get; set; }
+        #nullable enable
+        public string? display_name { get; set; }
+        #nullable disable
         public string description { get; set; }
         public string version { get; set; }
         public Author author { get; set; }
