@@ -48,7 +48,7 @@ namespace ElevenTube_Music.Settings
         {
             var expander = new SettingsExpander
             {
-                Header = pluginConfig.name,
+                Header = pluginConfig.display_name ?? pluginConfig.name,
                 Description = pluginConfig.description
             };
 
