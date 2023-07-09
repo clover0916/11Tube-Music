@@ -10,7 +10,7 @@
   <Identity
     Name="91fbca41-ebef-42a6-9e5f-b743e95496e1"
     Publisher="CN=Clover_Midori"
-    Version="0.0.1.0" />
+    Version="0.0.2.0" />
 
   <mp:PhoneIdentity PhoneProductId="91fbca41-ebef-42a6-9e5f-b743e95496e1" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 

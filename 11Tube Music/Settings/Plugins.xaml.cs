@@ -100,7 +100,7 @@ namespace ElevenTube_Music.Settings
             var toggleSwitch = new ToggleSwitch();
             bool previousSetting = LoadPreviousSetting(pluginConfig.name);
             toggleSwitch.IsOn = previousSetting;
-
+            toggleSwitch.Tag = pluginConfig.name;
             toggleSwitch.Toggled += ToggleSwitch_Toggled;
 
             expander.Content = toggleSwitch;
@@ -112,8 +112,7 @@ namespace ElevenTube_Music.Settings
         {
             restartCard.Visibility = Visibility.Visible;
             ToggleSwitch toggleSwitch = (ToggleSwitch)sender;
-            var expander = (SettingsCard)toggleSwitch.Parent;
-            SaveSetting(expander.Header.ToString(), toggleSwitch.IsOn);
+            SaveSetting(toggleSwitch.Tag.ToString(), toggleSwitch.IsOn);
         }
 
         private static bool LoadPreviousSetting(string pluginName)

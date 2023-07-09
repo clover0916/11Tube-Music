@@ -58,7 +58,7 @@ namespace ElevenTube_Music.Plugins.DiscordRichPresence
             Presence.Buttons = new Button[]
             {
                 new Button() { Label = "Get 11Tube Music", Url = "https://github.com/clover0916/11Tube-Music" },
-                new Button() { Label = "Watch on YouTube", Url = "https://music.youtube.com/watch?v=" + VideoDetail.videoId }
+                new Button() { Label = "Listen on YouTube", Url = "https://music.youtube.com/watch?v=" + VideoDetail.videoId }
             };
             Presence.Timestamps = new Timestamps()
             {
