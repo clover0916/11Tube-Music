@@ -1,15 +1,19 @@
 using ElevenTube_Music.Settings.Types;
 using Microsoft.UI;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.Web.WebView2.Core;
 using NAudio.CoreAudioApi;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Calls;
 using Windows.Storage;
 
 namespace ElevenTube_Music
@@ -17,11 +21,15 @@ namespace ElevenTube_Music
 
     public sealed partial class MainWindow : Window
     {
+        private bool isStarted = false;
         private IReadOnlyList<StorageFolder> plugins;
         public double Volume { get; set; } = 100;
         private bool IsMute = false;
         private double lastVolume;
         public bool Volume_Button_IsEnabled { get; set; } = false;
+        public Types.VideoDetail VideoDetail;
+        public bool IsPaused;
+        public double CurrentTime;
 
         public MainWindow()
         {
@@ -50,10 +58,103 @@ namespace ElevenTube_Music
             else if (WebView.Source.AbsoluteUri.Contains("music.youtube.com/library"))
             {
                 NavigationViewControl.SelectedItem = NavigationViewControl.MenuItems[2];
-            } else if (WebView.Source.AbsoluteUri.Contains("music.youtube.com/")) {
+            }
+            else if (WebView.Source.AbsoluteUri.Contains("music.youtube.com/"))
+            {
                 NavigationViewControl.SelectedItem = NavigationViewControl.MenuItems[0];
             }
         }
+
+        private void WebView_CoreWebView2Initialized(WebView2 sender, CoreWebView2InitializedEventArgs args)
+        {
+            NavigationViewControl.IsBackEnabled = true;
+            WebView.CoreWebView2.DOMContentLoaded += CoreWebView2_DOMContentLoaded;
+            WebView.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
+            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+            if (localSettings.Values["IsSaveSession"] == null)
+            {
+                localSettings.Values["IsSaveSession"] = true;
+            }
+            if ((bool)localSettings.Values["IsSaveSession"] == true)
+            {
+                if (localSettings.Values["LastUrl"] != null)
+                {
+                    WebView.Source = new Uri((string)localSettings.Values["LastUrl"]);
+                }
+                WebView.CoreWebView2.SourceChanged += CoreWebView2_SourceChanged;
+            }
+        }
+
+        private async void CoreWebView2_DOMContentLoaded(CoreWebView2 sender, CoreWebView2DOMContentLoadedEventArgs args)
+        {
+            StorageFolder storageFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
+            StorageFile file = await storageFolder.GetFileAsync("preload.js");
+            string preloadScript = await FileIO.ReadTextAsync(file);
+            await sender.ExecuteScriptAsync(preloadScript);
+
+            loadingBar.Visibility = Visibility.Collapsed;
+            WebView.Visibility = Visibility.Visible;
+            await Task.Delay(500);
+            WebView.Opacity = 1;
+
+            Volume_Button_IsEnabled = true;
+            var volume = Get_Volume();
+            Volume = (double)(volume * 100);
+            Bindings.Update();
+        }
+
+        private async void WebView_NavigationStarting(WebView2 sender, CoreWebView2NavigationStartingEventArgs args)
+        {
+            if (args.Uri.ToLower().Contains("music.youtube.com/") && isStarted == false)
+            {
+                isStarted = true;
+                await Load_Plugins(sender);
+
+                await Task.Delay(1000);
+                PluginLoadingText.Text = "Loaded";
+                PluginLoading.Visibility = Visibility.Collapsed;
+                pluginLoadedCheck.Visibility = Visibility.Visible;
+                await Task.Delay(1000);
+                PluginLoadingText.Text = "Plugins";
+                pluginLoadedCheck.Visibility = Visibility.Collapsed;
+            }
+
+        }
+
+        private void CoreWebView2_SourceChanged(CoreWebView2 sender, CoreWebView2SourceChangedEventArgs args)
+        {
+            if (WebView.Source.AbsoluteUri.Contains("music.youtube.com/"))
+            {
+                ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+                localSettings.Values["LastUrl"] = WebView.Source.AbsoluteUri;
+            }
+        }
+
+        public event Action<Types.VideoDetail> VideoDetailReceived;
+        public event Action<Types.IsPaused> VideoPaused;
+
+        private void CoreWebView2_WebMessageReceived(CoreWebView2 sender, CoreWebView2WebMessageReceivedEventArgs args)
+        {
+            var data = args.WebMessageAsJson;
+            //use Newtonsoft.Json
+            var msg = JsonConvert.DeserializeObject<Types.Message>(data);
+            var type = msg.Type;
+            if (type == "isPaused")
+            {
+                Debug.WriteLine(msg.Data.ToString());
+                Types.IsPaused isPaused = JsonConvert.DeserializeObject<Types.IsPaused>(msg.Data.ToString());
+                IsPaused = isPaused.paused;
+                CurrentTime = isPaused.currentTime;
+                VideoPaused?.Invoke(isPaused);
+            }
+            else if (type == "videoDetail")
+            {
+                Types.VideoDetail videoDetail = JsonConvert.DeserializeObject<Types.VideoDetail>(msg.Data.ToString());
+                VideoDetail = videoDetail;
+                VideoDetailReceived?.Invoke(VideoDetail);
+            }
+        }
+
 
         private void Open_Setting(object sender, RoutedEventArgs e)
         {
@@ -65,72 +166,47 @@ namespace ElevenTube_Music
             SolidColorBrush background = Application.Current.Resources["ApplicationPageBackgroundThemeBrush"] as SolidColorBrush;
             SolidColorBrush buttonHover = Application.Current.Resources["TextOnAccentFillColorSecondaryBrush"] as SolidColorBrush;
             SolidColorBrush buttonPressed = Application.Current.Resources["TextOnAccentFillColorSecondaryBrush"] as SolidColorBrush;
-            IntPtr hwnd = WinRT.Interop.WindowNative.GetWindowHandle(settingsWindow);
+            IntPtr hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
             WindowId windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
-            Microsoft.UI.Windowing.AppWindow appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
-            appWindow.TitleBar.BackgroundColor = background.Color;
-            appWindow.TitleBar.InactiveBackgroundColor = background.Color;
-            appWindow.TitleBar.ButtonBackgroundColor = background.Color;
-            appWindow.TitleBar.ButtonInactiveBackgroundColor = background.Color;
-            appWindow.TitleBar.ButtonHoverBackgroundColor = buttonHover.Color;
-            appWindow.TitleBar.ButtonPressedBackgroundColor = buttonPressed.Color;
+            Microsoft.UI.Windowing.AppWindow Window = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
+            IntPtr s_hwnd = WinRT.Interop.WindowNative.GetWindowHandle(settingsWindow);
+            WindowId s_windowId = Win32Interop.GetWindowIdFromWindow(s_hwnd);
+            Microsoft.UI.Windowing.AppWindow s_Window = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(s_windowId);
+            s_Window.TitleBar.BackgroundColor = background.Color;
+            s_Window.TitleBar.InactiveBackgroundColor = background.Color;
+            s_Window.TitleBar.ButtonBackgroundColor = background.Color;
+            s_Window.TitleBar.ButtonInactiveBackgroundColor = background.Color;
+            s_Window.TitleBar.ButtonHoverBackgroundColor = buttonHover.Color;
+            s_Window.TitleBar.ButtonPressedBackgroundColor = buttonPressed.Color;
             Windows.UI.Color w1 = new() { A = 255, R = 255, G = 255, B = 255 };
-            appWindow.TitleBar.ButtonForegroundColor = w1;
-            appWindow.TitleBar.ButtonHoverForegroundColor = w1;
-            appWindow.TitleBar.ButtonPressedForegroundColor = w1;
-            appWindow.Resize(new Windows.Graphics.SizeInt32(1080, 640));
+            s_Window.TitleBar.ButtonForegroundColor = w1;
+            s_Window.TitleBar.ButtonHoverForegroundColor = w1;
+            s_Window.TitleBar.ButtonPressedForegroundColor = w1;
+            s_Window.Resize(new Windows.Graphics.SizeInt32(1080, 640));
+            s_Window.SetIcon("Assets/favicon.ico");
+
+            SetWindowLongPtr(s_hwnd, -8, hwnd);
+
+            var Presenter = OverlappedPresenter.Create();
+            Presenter.IsModal = true;
+            s_Window.SetPresenter(Presenter);
+
             settingsWindow.Activate();
         }
 
-        private void CoreWebView2_SourceChanged(Microsoft.Web.WebView2.Core.CoreWebView2 sender, Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs args)
+        public static IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
         {
-            if (WebView.Source.AbsoluteUri.Contains("music.youtube.com/"))
-            {
-                ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-                localSettings.Values["LastUrl"] = WebView.Source.AbsoluteUri;
-            }
+            if (IntPtr.Size == 8)
+                return SetWindowLongPtr64(hWnd, nIndex, dwNewLong);
+            else
+                return new IntPtr(SetWindowLong32(hWnd, nIndex, dwNewLong.ToInt32()));
         }
 
-        private async void WebView_NavigationCompleted(WebView2 sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs args)
-        {
-            await WebView.ExecuteScriptAsync(@"
-                const audioCtx = new AudioContext();
-                const oscillator = audioCtx.createOscillator();
-                oscillator.type = 'square';
-                oscillator.frequency.value = 0;
-                oscillator.connect(audioCtx.destination);
-                oscillator.start();
-                setTimeout(() => {
-                    oscillator.stop();
-                }, 1000);");
-            NavigationViewControl.IsBackEnabled = true;
+        [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
+        private static extern int SetWindowLong32(IntPtr hWnd, int nIndex, int dwNewLong);
 
-            loadingBar.Visibility = Visibility.Collapsed;
-            WebView.Visibility = Visibility.Visible;
-            await Task.Delay(500);
-            WebView.Opacity = 1;
-
-            Volume_Button_IsEnabled = true;
-            var volume = Get_Volume();
-            Volume = (double)(volume * 100);
-            Bindings.Update();
-
-            await WebView.ExecuteScriptAsync(@"
-                const hideElements = [
-                    { tabId: 'SPunlimited' },
-                    { tabId: 'FEmusic_home' },
-                    { tabId: 'FEmusic_explore' },
-                    { tabId: 'FEmusic_library_landing' }
-                ];
-
-                hideElements.forEach(element => {
-                    const elements = document.querySelectorAll('[tab-id=' + element.tabId + ']');
-                    elements.forEach(element => {
-                        element.style.display = 'none';
-                    });
-                });
-            ");
-        }
+        [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr")]
+        private static extern IntPtr SetWindowLongPtr64(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
 
         public async void ControlWebView(string tag)
         {
@@ -148,23 +224,6 @@ namespace ElevenTube_Music
             }
         }
 
-        private async void WebView_NavigationStarting(WebView2 sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs args)
-        {
-            if (args.Uri.ToLower().Contains("music.youtube.com/"))
-            {
-                await Load_Plugins(sender);
-
-                await Task.Delay(1000);
-                PluginLoadingText.Text = "Loaded";
-                PluginLoading.Visibility = Visibility.Collapsed;
-                pluginLoadedCheck.Visibility = Visibility.Visible;
-                await Task.Delay(1000);
-                PluginLoadingText.Text = "Plugins";
-                pluginLoadedCheck.Visibility = Visibility.Collapsed;
-            }
-
-        }
-
         private async Task Load_Plugins(WebView2 sender)
         {
             StorageFolder pluginsFolder = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync("Plugins");
@@ -177,7 +236,7 @@ namespace ElevenTube_Music
                 Debug.WriteLine(plugin.Name);
                 StorageFile config = await plugin.GetFileAsync("config.json");
                 string configJson = await FileIO.ReadTextAsync(config);
-                PluginConfig pluginConfig = Newtonsoft.Json.JsonConvert.DeserializeObject<PluginConfig>(configJson);
+                PluginConfig pluginConfig = JsonConvert.DeserializeObject<PluginConfig>(configJson);
 
                 if (Plugin_IsEnabled(pluginConfig.name))
                 {
@@ -188,11 +247,33 @@ namespace ElevenTube_Music
 
                     if (pluginConfig.type == "Javascript")
                     {
-                        Debug.WriteLine("Enabled");
+                        StorageFile file = await plugin.GetFileAsync("index.js");
+                        string text = await FileIO.ReadTextAsync(file);
+                        await sender.CoreWebView2.ExecuteScriptAsync(text);
                     }
-                    StorageFile file = await plugin.GetFileAsync("index.js");
-                    string text = await FileIO.ReadTextAsync(file);
-                    await sender.CoreWebView2.ExecuteScriptAsync(text);
+                    else if (pluginConfig.type == "C#")
+                    {
+                        string pluginName = pluginConfig.name;
+                        string methodName = "Main";
+                        Type pluginType = Type.GetType("ElevenTube_Music.Plugins." + pluginName + ".main");
+                        if (pluginType != null)
+                        {
+                            MethodInfo method = pluginType.GetMethod(methodName);
+                            if (method != null)
+                            {
+                                object instance = Activator.CreateInstance(pluginType);
+                                method.Invoke(instance, new[] { this });
+                            }
+                            else
+                            {
+                                Debug.WriteLine("指定されたメソッドが見つかりませんでした。");
+                            }
+                        }
+                        else
+                        {
+                            Debug.WriteLine("指定されたプラグインが見つかりませんでした。");
+                        }
+                    }
                 }
             }
 
@@ -264,6 +345,10 @@ namespace ElevenTube_Music
             foreach (StorageFolder plugin in plugins)
             {
                 Grid grid = PluginList.FindName(plugin.Name) as Grid;
+                if (grid == null)
+                {
+                    return;
+                }
                 TextBlock textBlock = grid.Children[0] as TextBlock;
                 textBlock.Text = "Loaded " + plugin.Name;
                 ProgressRing progressRing = grid.Children[1] as ProgressRing;
@@ -390,21 +475,5 @@ namespace ElevenTube_Music
             }
         }
 
-        private void WebView_CoreWebView2Initialized(WebView2 sender, CoreWebView2InitializedEventArgs args)
-        {
-            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-            if (localSettings.Values["IsSaveSession"] == null)
-            {
-                localSettings.Values["IsSaveSession"] = true;
-            }
-            if ((bool)localSettings.Values["IsSaveSession"] == true)
-            {
-                if (localSettings.Values["LastUrl"] != null)
-                {
-                    WebView.Source = new Uri((string)localSettings.Values["LastUrl"]);
-                }
-                WebView.CoreWebView2.SourceChanged += CoreWebView2_SourceChanged;
-            }
-        }
     }
 }

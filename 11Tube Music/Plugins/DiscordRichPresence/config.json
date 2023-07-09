@@ -1,7 +1,8 @@
 {
-  "type": "Javascript",
-  "name": "AdBlocker",
-  "description": "Blocks ads on Youtube Music",
+  "type": "C#",
+  "name": "DiscordRichPresence",
+  "display_name":  "Discord RPC",
+  "description": "Show play status on Discord",
   "version": "1.0.0",
   "author": {
     "name": "Clover_Midori",
