@@ -1,4 +1,5 @@
 # 11Tube Music
+Youtube Music for Windows 11
 ## Requrements
 - Windows 11 21H2 +
 
@@ -30,4 +31,4 @@ I welcome contributions from the community to improve 11Tube Music. If you would
 4. Submit a pull request detailing your changes and the problem they solve.
 
 ## License
-11Tube Music is released under the MIT License. See the LICENSE file for more details.
+11Tube Music is released under the GPL-3.0 License. See the LICENSE file for more details.
