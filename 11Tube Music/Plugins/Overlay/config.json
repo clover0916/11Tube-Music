@@ -1,0 +1,27 @@
+{
+  "type": "C#",
+  "name": "Overlay",
+  "description": "Show overlay on the screen.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Clover_Midori",
+    "contact": [
+      {
+        "name": "Twitter",
+        "url": "https://twitter.com/@Clover_0916"
+      },
+      {
+        "name": "Github",
+        "url": "https://github.com/clover0916"
+      }
+    ]
+  },
+  "option": [
+    {
+      "type": "input",
+      "name": "opacity",
+      "display_name": "Opacity",
+      "description": "Opacity of the overlay."
+    }
+  ]
+}
