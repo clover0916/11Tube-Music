@@ -1,4 +1,4 @@
-[日本語(Japanese)](https://github.com/clover0916/11Tube-Music/edit/master/README.ja.md) 👈
+[日本語(Japanese)](https://github.com/clover0916/11Tube-Music/blob/master/README.ja.md) 👈
 
 # 11Tube Music
 Youtube Music for Windows 11
