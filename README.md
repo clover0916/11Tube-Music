@@ -4,10 +4,12 @@ Youtube Music for Windows 11
 - Windows 11 21H2 +
 
 ## Installation
-1. Download the latest version of 11Tube Music from [Releases](https://github.com/clover0916/11Tube-Music/releases). <br >
-2. Locate the downloaded installer file and double-click to run it.
-3. Follow the on-screen instructions to complete the installation process.
-4. Once the installation is finished, launch 11Tube Music by double-clicking its icon on the desktop or searching for it in the applications menu.
+1. Download the latest version (P) of 11Tube Music from [Releases](https://github.com/clover0916/11Tube-Music/releases).
+2. Locate the  file and unzip it.
+3. Install the certificate [How?](https://github.com/clover0916/11Tube-Music/blob/master/How_to_install_certificate.md)
+4. Double-click the .appx file
+5. Follow the on-screen instructions to complete the installation process.
+6. Once the installation is finished, congratulations! You can now enjoy 11Tube Music.
 
 ## Features
 - Resume previous session music
