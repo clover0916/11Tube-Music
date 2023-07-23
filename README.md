@@ -10,10 +10,13 @@ Youtube Music for Windows 11
 4. Once the installation is finished, launch 11Tube Music by double-clicking its icon on the desktop or searching for it in the applications menu.
 
 ## Features
-- Resume previous session music.
-- Stream music videos from YouTube without ads (Plugin).
-- Show Show playing status on Discord (Plugin).
-- User-friendly interface with intuitive navigation and controls.
+- Resume previous session music
+- Stream music videos from YouTube without ads (Plugin)
+- Show Show playing status on Discord (Plugin)
+- Visualizer (Plugin)
+- Cinematic Lighting (Plugin)
+- Overlay (Plugin)
+- User-friendly interface with intuitive navigation and controls
 
 ## Troubleshooting
 If you encounter any issues while using 11Tube Music, try the following steps to resolve them:
