@@ -7,6 +7,7 @@ namespace ElevenTube_Music
 
     public partial class App : Application
     {
+        private Window m_window;
 
         public App()
         {
@@ -36,6 +37,5 @@ namespace ElevenTube_Music
             m_window.Activate();
         }
 
-        private Window m_window;
     }
 }

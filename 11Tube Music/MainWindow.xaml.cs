@@ -21,6 +21,7 @@ namespace ElevenTube_Music
 
     public sealed partial class MainWindow : Window
     {
+        private AppWindow _appWindow;
         private bool isStarted = false;
         private IReadOnlyList<StorageFolder> plugins;
         public double Volume { get; set; } = 100;
@@ -30,12 +31,23 @@ namespace ElevenTube_Music
         public Types.VideoDetail VideoDetail;
         public bool IsPaused;
         public double CurrentTime;
+        private bool FullScreen = false;
+        public Types.Playlist[] Playlists;
 
         public MainWindow()
         {
             this.InitializeComponent();
 
-            NavigationViewControl.SelectedItem = NavigationViewControl.MenuItems[0];
+            _appWindow = GetAppWindowForCurrentWindow();
+            SideNavigation.SelectedItem = SideNavigation.MenuItems[0];
+        }
+
+        private AppWindow GetAppWindowForCurrentWindow()
+        {
+            IntPtr hWnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+            WindowId myWndId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hWnd);
+
+            return AppWindow.GetFromWindowId(myWndId);
         }
 
         private void NavigationViewControl_ItemInvoked(NavigationView sender,
@@ -50,26 +62,35 @@ namespace ElevenTube_Music
 
         private void NavigationViewControl_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
         {
-            WebView.GoBack();
-            if (WebView.Source.AbsoluteUri.Contains("music.youtube.com/explore"))
+            if (WebView.CanGoBack)
             {
-                NavigationViewControl.SelectedItem = NavigationViewControl.MenuItems[1];
-            }
-            else if (WebView.Source.AbsoluteUri.Contains("music.youtube.com/library"))
-            {
-                NavigationViewControl.SelectedItem = NavigationViewControl.MenuItems[2];
-            }
-            else if (WebView.Source.AbsoluteUri.Contains("music.youtube.com/"))
-            {
-                NavigationViewControl.SelectedItem = NavigationViewControl.MenuItems[0];
+                WebView.GoBack();
             }
         }
 
         private void WebView_CoreWebView2Initialized(WebView2 sender, CoreWebView2InitializedEventArgs args)
         {
             NavigationViewControl.IsBackEnabled = true;
+            WebView.CoreWebView2.Profile.PreferredColorScheme = CoreWebView2PreferredColorScheme.Dark;
             WebView.CoreWebView2.DOMContentLoaded += CoreWebView2_DOMContentLoaded;
             WebView.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
+            WebView.CoreWebView2.ContainsFullScreenElementChanged += (obj, args) =>
+            {
+                FullScreen = WebView.CoreWebView2.ContainsFullScreenElement;
+                if (FullScreen)
+                {
+                    _appWindow.SetPresenter(AppWindowPresenterKind.FullScreen);
+                    NavigationViewControl.IsPaneVisible = false;
+                    SideNavigation.IsPaneVisible = false;
+                }
+                else
+                {
+                    _appWindow.SetPresenter(AppWindowPresenterKind.Default);
+                    NavigationViewControl.IsPaneVisible = true;
+                    SideNavigation.IsPaneVisible = true;
+                }
+
+            };
             ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
             if (localSettings.Values["IsSaveSession"] == null)
             {
@@ -79,7 +100,11 @@ namespace ElevenTube_Music
             {
                 if (localSettings.Values["LastUrl"] != null)
                 {
-                    WebView.Source = new Uri((string)localSettings.Values["LastUrl"]);
+
+                    if (localSettings.Values["LastUrl"].ToString().Contains("watch"))
+                    {
+                        WebView.Source = new Uri((string)localSettings.Values["LastUrl"]);
+                    }
                 }
                 WebView.CoreWebView2.SourceChanged += CoreWebView2_SourceChanged;
             }
@@ -92,9 +117,11 @@ namespace ElevenTube_Music
             string preloadScript = await FileIO.ReadTextAsync(file);
             await sender.ExecuteScriptAsync(preloadScript);
 
+            LoadedStoryboard.Begin();
+            await Task.Delay(500);
             loadingBar.Visibility = Visibility.Collapsed;
             WebView.Visibility = Visibility.Visible;
-            await Task.Delay(500);
+            await Task.Delay(250);
             WebView.Opacity = 1;
 
             Volume_Button_IsEnabled = true;
@@ -153,35 +180,63 @@ namespace ElevenTube_Music
                 VideoDetail = videoDetail;
                 VideoDetailReceived?.Invoke(VideoDetail);
             }
+            else if (type == "playlists")
+            {
+                Types.Playlist[] playlists = JsonConvert.DeserializeObject<Types.Playlist[]>(msg.Data.ToString());
+                Playlists = playlists;
+                int i = 0;
+                foreach (var playlist in playlists)
+                {
+                    var item = CreatePlaylistItem(playlist, i);
+                    SideNavigation.MenuItems.Add(item);
+                    i++;
+                }
+            }
+            else if (type == "popstate")
+            {
+                string url = msg.Data.ToString();
+                Debug.WriteLine(url);
+                if (url.Contains("music.youtube.com/explore"))
+                {
+                    SideNavigation.SelectedItem = SideNavigation.MenuItems[1];
+                }
+                else if (url.Contains("music.youtube.com/library"))
+                {
+                    SideNavigation.SelectedItem = SideNavigation.MenuItems[2];
+                }
+                else if (url.Contains("music.youtube.com/"))
+                {
+                    SideNavigation.SelectedItem = SideNavigation.MenuItems[0];
+                }
+            }
         }
 
+        private static NavigationViewItem CreatePlaylistItem(Types.Playlist playlist, int i)
+        {
+            NavigationViewItem item = new()
+            {
+                Content = playlist.title,
+                Tag = "playlist-" + i
+            };
+            return item;
+        }
 
         private void Open_Setting(object sender, RoutedEventArgs e)
         {
             Window settingsWindow = new()
             {
                 Content = new SettingsPage(),
-                Title = "ê›íË"
+                Title = "Settings",
             };
-            SolidColorBrush background = Application.Current.Resources["ApplicationPageBackgroundThemeBrush"] as SolidColorBrush;
-            SolidColorBrush buttonHover = Application.Current.Resources["TextOnAccentFillColorSecondaryBrush"] as SolidColorBrush;
-            SolidColorBrush buttonPressed = Application.Current.Resources["TextOnAccentFillColorSecondaryBrush"] as SolidColorBrush;
+            SolidColorBrush background = Microsoft.UI.Xaml.Application.Current.Resources["ApplicationPageBackgroundThemeBrush"] as SolidColorBrush;
             IntPtr hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-            WindowId windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
-            Microsoft.UI.Windowing.AppWindow Window = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
             IntPtr s_hwnd = WinRT.Interop.WindowNative.GetWindowHandle(settingsWindow);
             WindowId s_windowId = Win32Interop.GetWindowIdFromWindow(s_hwnd);
-            Microsoft.UI.Windowing.AppWindow s_Window = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(s_windowId);
+            AppWindow s_Window = AppWindow.GetFromWindowId(s_windowId);
             s_Window.TitleBar.BackgroundColor = background.Color;
             s_Window.TitleBar.InactiveBackgroundColor = background.Color;
             s_Window.TitleBar.ButtonBackgroundColor = background.Color;
             s_Window.TitleBar.ButtonInactiveBackgroundColor = background.Color;
-            s_Window.TitleBar.ButtonHoverBackgroundColor = buttonHover.Color;
-            s_Window.TitleBar.ButtonPressedBackgroundColor = buttonPressed.Color;
-            Windows.UI.Color w1 = new() { A = 255, R = 255, G = 255, B = 255 };
-            s_Window.TitleBar.ButtonForegroundColor = w1;
-            s_Window.TitleBar.ButtonHoverForegroundColor = w1;
-            s_Window.TitleBar.ButtonPressedForegroundColor = w1;
             s_Window.Resize(new Windows.Graphics.SizeInt32(1080, 640));
             s_Window.SetIcon("Assets/favicon.ico");
 
@@ -189,6 +244,8 @@ namespace ElevenTube_Music
 
             var Presenter = OverlappedPresenter.Create();
             Presenter.IsModal = true;
+            Presenter.IsMaximizable = false;
+            Presenter.IsMinimizable = false;
             s_Window.SetPresenter(Presenter);
 
             settingsWindow.Activate();
@@ -212,15 +269,31 @@ namespace ElevenTube_Music
         {
             if (tag == "home")
             {
-                await WebView.ExecuteScriptAsync("document.querySelector('[tab-id=\"FEmusic_home\"]').click();");
+                await WebView.ExecuteScriptAsync("document.querySelector(\"#guide-renderer\").querySelector(\"#sections\").childNodes[0].querySelector(\"#items\").childNodes[0].click();");
             }
             else if (tag == "explore")
             {
-                await WebView.ExecuteScriptAsync("document.querySelector('[tab-id=\"FEmusic_explore\"]').click();");
+                await WebView.ExecuteScriptAsync("document.querySelector(\"#guide-renderer\").querySelector(\"#sections\").childNodes[0].querySelector(\"#items\").childNodes[1].click();");
             }
             else if (tag == "library")
             {
-                await WebView.ExecuteScriptAsync("document.querySelector('[tab-id=\"FEmusic_library_landing\"]').click();");
+                await WebView.ExecuteScriptAsync("document.querySelector(\"#guide-renderer\").querySelector(\"#sections\").childNodes[0].querySelector(\"#items\").childNodes[2].click();");
+            }
+            else if (tag == "addPlaylist")
+            {
+                await WebView.ExecuteScriptAsync("document.querySelectorAll(\"#sections\")[0].childNodes[1].querySelector(\"button\").click()");
+
+            }
+            else if (tag.Contains("playlist"))
+            {
+                var SelectedItem = SideNavigation.SelectedItem as NavigationViewItem;
+                var item = SelectedItem.Tag;
+                int index = int.Parse(item.ToString().Replace("playlist-", ""));
+
+                string script = "document.querySelectorAll(\"#sections\")[0].childNodes[1].querySelector(\"#items\").querySelectorAll(\".title-column\")";
+
+
+                await WebView.ExecuteScriptAsync(script + "[" + index + "].click();");
             }
         }
 
