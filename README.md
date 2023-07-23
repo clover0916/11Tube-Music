@@ -4,6 +4,7 @@
 Youtube Music for Windows 11
 ## Requirements
 - Windows 11 21H2 +
+- x64
 
 ## Installation
 1. Download the latest version (ZIP) of 11Tube Music from [Releases](https://github.com/clover0916/11Tube-Music/releases).
