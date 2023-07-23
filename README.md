@@ -6,7 +6,7 @@ Youtube Music for Windows 11
 ## Installation
 1. Download the latest version (P) of 11Tube Music from [Releases](https://github.com/clover0916/11Tube-Music/releases).
 2. Locate the  file and unzip it.
-3. Install the certificate [How?](https://github.com/clover0916/11Tube-Music/blob/master/How_to_install_the_certificate.md)
+3. Install the certificate. [How?](https://github.com/clover0916/11Tube-Music/blob/master/How_to_install_the_certificate.md)
 4. Double-click the .appx file
 5. Follow the on-screen instructions to complete the installation process.
 6. Once the installation is finished, congratulations! You can now enjoy 11Tube Music.
