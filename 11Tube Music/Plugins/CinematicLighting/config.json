@@ -1,0 +1,20 @@
+{
+  "type": "Javascript",
+  "name": "CinematicLighting",
+  "display_name": "Cinematic lighting",
+  "description": "Make the lighting more cinematic.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Clover_Midori",
+    "contact": [
+      {
+        "name": "Twitter",
+        "url": "https://twitter.com/@Clover_0916"
+      },
+      {
+        "name": "Github",
+        "url": "https://github.com/clover0916"
+      }
+    ]
+  }
+}
