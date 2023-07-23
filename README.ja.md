@@ -2,6 +2,7 @@
 Windows 11向けのYoutube音楽プレーヤー
 ## 必要条件
 - Windows 11 21H2以上
+- x64
 
 ## インストール方法
 1. [Releases](https://github.com/clover0916/11Tube-Music/releases)から11Tube Musicの最新バージョン（ZIP）をダウンロードします。
