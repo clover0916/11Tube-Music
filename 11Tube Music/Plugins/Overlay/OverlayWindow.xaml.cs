@@ -3,6 +3,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using Vanara.PInvoke;
 using static Vanara.PInvoke.User32;
 
@@ -12,11 +14,23 @@ namespace ElevenTube_Music.Plugins.Overlay
     {
         ComCtl32.SUBCLASSPROC wndProcHandler;
 
-        public OverlayWindow(MainWindow mainWindow)
+        public OverlayWindow(MainWindow mainWindow, List<PluginOption> Options)
         {
             this.InitializeComponent();
             mainWindow.VideoDetailReceived += HandleVideoDetailReceived;
             mainWindow.VideoPaused += HandleVideoPaused;
+
+            if (Options != null)
+            {
+                PluginOption existingOption = Options.Find(option => option.Name == "opacity");
+
+
+                if (existingOption != null)
+                {
+                    RootGrid.Opacity = double.Parse(existingOption.Value as string);
+                }
+            }
+            
 
             var windowHandle = new IntPtr((long)this.AppWindow.Id.Value);
 

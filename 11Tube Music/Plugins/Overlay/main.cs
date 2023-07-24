@@ -1,4 +1,6 @@
 ﻿using System;
+using ElevenTube_Music.Types;
+using System.Collections.Generic;
 using Microsoft.UI.Windowing;
 using Vanara.PInvoke;
 using Windows.Graphics;
@@ -10,9 +12,9 @@ namespace ElevenTube_Music.Plugins.Overlay
     {
         private OverlayWindow overlayWindow;
 
-        public void Main(MainWindow window)
+        public void Main(MainWindow window, List<PluginOption> Options)
         {
-            overlayWindow = new OverlayWindow(window);
+            overlayWindow = new OverlayWindow(window, Options);
 
             overlayWindow.AppWindow.SetPresenter(AppWindowPresenterKind.FullScreen);
 
