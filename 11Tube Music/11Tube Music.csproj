@@ -102,9 +102,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Assets\SNS\" />
-  </ItemGroup>
-  <ItemGroup>
     <Page Update="Settings\Customize.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -119,6 +116,11 @@
     <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Assets\SNS\**" />
+    <Content Remove="Assets\SNS\**" />
+    <EmbeddedResource Remove="Assets\SNS\**" />
+    <None Remove="Assets\SNS\**" />
+    <Page Remove="Assets\SNS\**" />
     <PRIResource Remove="Plugins\DiscordRichPresence\**" />
   </ItemGroup>
   <ItemGroup>
@@ -128,5 +130,8 @@
     <Page Update="Plugins\Overlay\OverlayWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Remove="Assets\SNS\**" />
   </ItemGroup>
 </Project>

@@ -41,9 +41,9 @@
             VerticalScrollBarVisibility="Auto"
             VerticalScrollMode="Auto">
             <StackPanel Spacing="{StaticResource SettingsCardSpacing}" Padding="0,16,0,0">
-                <labs:SettingsCard Description="© 2023 Clover_Midori. All rights reserved." Header="11Tube Music" Content="v0.0.4-beta">
+                <labs:SettingsCard Description="© 2023 Clover_Midori. All rights reserved." Header="11Tube Music" Content="v0.0.5-beta">
                     <labs:SettingsCard.HeaderIcon>
-                        <ImageIcon Source="/Assets/48.png" Height="32px"/>
+                        <ImageIcon Source="/Assets/Square44x44Logo.altform-lightunplated_targetsize-256.png" />
                     </labs:SettingsCard.HeaderIcon>
                 </labs:SettingsCard>
                 <labs:SettingsCard Header="Originally" Description="Google Inc.">
@@ -71,7 +71,7 @@
                             Header="このプログラムに関して、いかなる問題が発生しても、私は一切責任を負いません。">
                             <StackPanel Margin="-12,0,0,0" Orientation="Vertical">
                                 <HyperlinkButton Content="利用規約" NavigateUri="https://www.clover-midori.net/ToS" />
-                                <HyperlinkButton Content="プライバシーポリシー" NavigateUri="https://www.clover-midori.net/Privacy_Policy" />
+                                <HyperlinkButton Content="プライバシーポリシー" NavigateUri="https://www.clover-midori.net/privacy" />
                             </StackPanel>
                         </labs:SettingsCard>
                     </labs:SettingsExpander.Items>

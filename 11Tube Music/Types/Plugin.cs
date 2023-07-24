@@ -1,20 +1,32 @@
 ﻿using System.Collections.Generic;
 
-namespace ElevenTube_Music.Settings.Types
+namespace ElevenTube_Music.Types
 {
+    public class PluginSetting
+    {
+        public bool Enable { get; set; }
+        public List<PluginOption> Options { get; set; }
+    }
+
+    public class PluginOption
+    {
+        public string Name { get; set; }
+        public object Value { get; set; }
+    }
+
     public class PluginConfig
     {
         public string type { get; set; }
         public string name { get; set; }
-        #nullable enable
+#nullable enable
         public string? display_name { get; set; }
-        #nullable disable
+#nullable disable
         public string description { get; set; }
         public string version { get; set; }
         public Author author { get; set; }
-        #nullable enable
+#nullable enable
         public Option[]? option { get; set; }
-        #nullable disable
+#nullable disable
     }
 
     public class Author
@@ -33,9 +45,11 @@ namespace ElevenTube_Music.Settings.Types
     {
         public string type { get; set; }
         public string name { get; set; }
-        #nullable enable
+#nullable enable
         public string? display_name { get; set; }
-        #nullable disable
+        public string? placeholder { get; set; }
+#nullable disable
         public string description { get; set; }
+
     }
 }
