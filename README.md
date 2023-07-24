@@ -1,19 +1,32 @@
+[日本語(Japanese)](https://github.com/clover0916/11Tube-Music/blob/master/README.ja.md) 👈
+
 # 11Tube Music
 Youtube Music for Windows 11
 ## Requirements
 - Windows 11 21H2 +
+- x64
 
 ## Installation
-1. Download the latest version of 11Tube Music from [Releases](https://github.com/clover0916/11Tube-Music/releases). <br >
-2. Locate the downloaded installer file and double-click to run it.
-3. Follow the on-screen instructions to complete the installation process.
-4. Once the installation is finished, launch 11Tube Music by double-clicking its icon on the desktop or searching for it in the applications menu.
+1. Download the latest version (ZIP) of 11Tube Music from [Releases](https://github.com/clover0916/11Tube-Music/releases).
+2. Locate the ZIP file and unzip it.
+3. Install the certificate. [How?](https://github.com/clover0916/11Tube-Music/blob/master/How_to_install_the_certificate.md)
+4. Double-click the APPX file
+5. Follow the on-screen instructions to complete the installation process.
+6. Once the installation is finished, congratulations! You can now enjoy 11Tube Music.
 
 ## Features
-- Resume previous session music.
-- Stream music videos from YouTube without ads (Plugin).
-- Show Show playing status on Discord (Plugin).
-- User-friendly interface with intuitive navigation and controls.
+- Resume previous session music
+- Stream music videos from YouTube without ads (Plugin)
+- Show Show playing status on Discord (Plugin)
+- Visualizer (Plugin)
+- Cinematic Lighting (Plugin)
+- Overlay (Plugin)
+- User-friendly interface with intuitive navigation and controls
+
+## How to update?
+1. Download the latest version (APPX) of 11Tube Music from [Releases](https://github.com/clover0916/11Tube-Music/releases).
+2. Locate the APPX file and double-click it.
+3. Follow the on-screen instructions to complete the installation process.
 
 ## Troubleshooting
 If you encounter any issues while using 11Tube Music, try the following steps to resolve them:
