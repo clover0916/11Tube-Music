@@ -16,9 +16,11 @@ namespace ElevenTube_Music.Plugins.Overlay
 {
     public static class WindowCompositionHelper
     {
+        #nullable enable
         private static WinCompositor? compositor;
         private static WinDispatcherQueue? dispatcherQueue;
         private static WinDispatcherQueueController? dispatcherQueueController;
+        #nullable disable
         private static object locker = new object();
 
         public static WinCompositor Compositor => EnsureCompositor();

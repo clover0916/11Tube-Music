@@ -2,7 +2,7 @@
   "type": "C#",
   "name": "Overlay",
   "description": "Show overlay on the screen.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": {
     "name": "Clover_Midori",
     "contact": [
@@ -21,7 +21,8 @@
       "type": "input",
       "name": "opacity",
       "display_name": "Opacity",
-      "description": "Opacity of the overlay."
+      "placeholder": "default: 0.6",
+      "description": "Opacity of the overlay. (0.0 ~ 1.0)"
     }
   ]
 }

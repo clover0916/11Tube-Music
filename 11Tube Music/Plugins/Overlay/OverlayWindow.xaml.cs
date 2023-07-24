@@ -10,9 +10,6 @@ namespace ElevenTube_Music.Plugins.Overlay
 {
     public sealed partial class OverlayWindow : Window
     {
-        bool transparent = true;
-        private MainWindow mainWindow;
-
         ComCtl32.SUBCLASSPROC wndProcHandler;
 
         public OverlayWindow(MainWindow mainWindow)
