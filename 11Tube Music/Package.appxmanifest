@@ -8,11 +8,11 @@
   IgnorableNamespaces="uap rescap">
 
   <Identity
-    Name="CloverMidori.11TubeMusic"
-    Publisher="CN=Clover_Midori"
+    Name="57611CloverMidori.11TubeMusic"
+    Publisher="CN=D441BC9A-AEC5-4913-B6B4-C376E2462E3F"
     Version="0.0.5.0" />
 
-  <mp:PhoneIdentity PhoneProductId="91fbca41-ebef-42a6-9e5f-b743e95496e1" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="6d89807d-67d6-4fac-8d58-8621d7853c02" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>11Tube Music</DisplayName>

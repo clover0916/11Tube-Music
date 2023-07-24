@@ -21,8 +21,10 @@
     <AppxBundle>Auto</AppxBundle>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <DefaultLanguage>ja-JP</DefaultLanguage>
-    <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x86|x64|arm64</AppxBundlePlatforms>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AppxPackageDir>C:\Users\youhu\source\11Tube Music\11Tube Music\bin\Release\</AppxPackageDir>
+    <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
   </PropertyGroup>
   
   <ItemGroup>
