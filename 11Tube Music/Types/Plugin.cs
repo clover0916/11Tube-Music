@@ -5,7 +5,7 @@ namespace ElevenTube_Music.Types
     public class PluginSetting
     {
         public bool Enable { get; set; }
-        public List<PluginOption> Options { get; set; }
+        public List<PluginOption> Options { get; set; } = new List<PluginOption>();
     }
 
     public class PluginOption

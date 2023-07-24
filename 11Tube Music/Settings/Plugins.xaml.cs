@@ -2,6 +2,7 @@ using CommunityToolkit.Labs.WinUI;
 using ElevenTube_Music.Types;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -70,7 +71,8 @@ namespace ElevenTube_Music.Settings
                     var optionStackPanel = new StackPanel
                     {
                         Orientation = Orientation.Horizontal,
-                        VerticalAlignment = VerticalAlignment.Center
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Tag = pluginConfig.name
                     };
 
                     var optionDescription = new TextBlock
@@ -85,40 +87,82 @@ namespace ElevenTube_Music.Settings
 
                     if (option.type == "toggle")
                     {
-                        var optionToggleSwitch = new ToggleSwitch
+                        ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+                        string existingJson = (string)localSettings.Values[pluginConfig.name];
+                        PluginSetting existingPluginSetting = Newtonsoft.Json.JsonConvert.DeserializeObject<PluginSetting>(existingJson);
+
+                        if (existingPluginSetting != null)
                         {
-                            Margin = new Thickness(8, 0, 0, 0),
-                            IsOn = false,
-                            Tag = option.name
-                        };
+                            PluginOption existingOption = existingPluginSetting.Options.Find(o => o.Name == option.name);
+                            var optionToggleSwitch = new ToggleSwitch
+                            {
+                                Margin = new Thickness(8, 0, 0, 0),
+                                IsOn = (bool)existingOption.Value,
+                                Tag = option.name
+                            };
 
-                        optionToggleSwitch.Toggled += OptionToggleSwitch_Toggled;
+                            optionToggleSwitch.Toggled += OptionToggleSwitch_Toggled;
 
-                        // Add the option to the list
-                        options.Add(new PluginOption { Name = option.name, Value = optionToggleSwitch.IsOn });
+                            // Add the option to the list
+                            options.Add(new PluginOption { Name = option.name, Value = optionToggleSwitch.IsOn });
 
-                        optionStackPanel.Children.Add(optionToggleSwitch);
+                            optionStackPanel.Children.Add(optionToggleSwitch);
+                        }
                     }
                     else if (option.type == "input")
                     {
-                        var optionTextBox = new TextBox
-                        {
-                            Margin = new Thickness(8, 0, 0, 0),
-                            Text = "",
-                            Tag = option.name
-                        };
+                        ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+                        string existingJson = (string)localSettings.Values[pluginConfig.name];
+                        Debug.WriteLine(existingJson);
+                        PluginSetting existingPluginSetting = null;
 
-                        if (option.placeholder != null)
+                        if (existingJson != null)
                         {
-                            optionTextBox.PlaceholderText = option.placeholder;
+                            existingPluginSetting = Newtonsoft.Json.JsonConvert.DeserializeObject<PluginSetting>(existingJson);
                         }
 
-                        optionTextBox.TextChanged += OptionTextBox_TextChanged;
+                        if (existingPluginSetting != null && existingPluginSetting.Options != null) // Options‚ªnull‚Å‚È‚¢‚±‚Æ‚ð’Ç‰Á
+                        {
+                            PluginOption existingOption = existingPluginSetting.Options.Find(o => o.Name == option.name);
 
-                        // Add the option to the list
-                        options.Add(new PluginOption { Name = option.name, Value = optionTextBox.Text });
+                            var optionTextBox = new TextBox
+                            {
+                                Margin = new Thickness(8, 0, 0, 0),
+                                Text = (string)existingOption?.Value ?? "",
+                                Tag = option.name
+                            };
 
-                        optionStackPanel.Children.Add(optionTextBox);
+                            if (option.placeholder != null)
+                            {
+                                optionTextBox.PlaceholderText = option.placeholder;
+                            }
+
+                            optionTextBox.TextChanged += OptionTextBox_TextChanged;
+
+                            // Add the option to the list
+                            options.Add(new PluginOption { Name = option.name, Value = optionTextBox.Text });
+
+                            optionStackPanel.Children.Add(optionTextBox);
+                        } else
+                        {
+                            var optionTextBox = new TextBox
+                            {
+                                Margin = new Thickness(8, 0, 0, 0),
+                                Text = "",
+                                Tag = option.name
+                            };
+                            if (option.placeholder != null)
+                            {
+                                optionTextBox.PlaceholderText = option.placeholder;
+                            }
+                            optionTextBox.TextChanged += OptionTextBox_TextChanged;
+
+                            // Add the option to the list
+                            options.Add(new PluginOption { Name = option.name, Value = optionTextBox.Text });
+
+                            optionStackPanel.Children.Add(optionTextBox);
+                        }
                     }
 
                     optionCard.Content = optionStackPanel;
@@ -180,9 +224,6 @@ namespace ElevenTube_Music.Settings
             expander.Content = toggleSwitch;
 
             SettingsContainer.Children.Add(expander);
-
-            // Save the options for this plugin
-            SaveSetting(pluginConfig.name, toggleSwitch.IsOn, options);
         }
 
         private void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
@@ -198,14 +239,18 @@ namespace ElevenTube_Music.Settings
         {
             restartCard.Visibility = Visibility.Visible;
             ToggleSwitch toggleSwitch = (ToggleSwitch)sender;
-            //SaveSetting(toggleSwitch.Tag.ToString(), toggleSwitch.IsOn);
+            //Get toggleSwitch parent to get plugin name
+            StackPanel parent = (StackPanel)VisualTreeHelper.GetParent(toggleSwitch);
+            Debug.WriteLine(parent.Tag.ToString());
+            //SaveOption(parent.Tag.ToString(), toggleSwitch.Tag.ToString(), toggleSwitch.IsOn);
         }
 
         private void OptionTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             restartCard.Visibility = Visibility.Visible;
             TextBox textBox = (TextBox)sender;
-            //SaveSetting(textBox.Tag.ToString(), textBox.Text);
+            StackPanel parent = (StackPanel)VisualTreeHelper.GetParent(textBox);
+            SaveOption(parent.Tag.ToString(),textBox.Tag.ToString(), textBox.Text);
         }
 
         private static PluginSetting ConvertToNewFormat(bool enable, bool oldFormat, List<PluginOption> oldOptions)
@@ -271,41 +316,69 @@ namespace ElevenTube_Music.Settings
             }
         }
 
-        private static void SaveSetting(string pluginName, bool settingValue, List<PluginOption> options)
+        private static void SaveOption(string pluginName, string optionName, object optionValue)
         {
             ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            string existingJson = localSettings.Values[pluginName] as string;
+            PluginSetting existingPluginSetting = null;
 
-            // Create the PluginSetting object and set its properties
-            PluginSetting pluginSetting = new PluginSetting
+            if (!string.IsNullOrEmpty(existingJson))
             {
-                Enable = settingValue,
-                Options = options
-            };
+                existingPluginSetting = Newtonsoft.Json.JsonConvert.DeserializeObject<PluginSetting>(existingJson);
+            }
 
-            // Convert the PluginSetting object to JSON
-            string json = Newtonsoft.Json.JsonConvert.SerializeObject(pluginSetting);
+            if (existingPluginSetting == null)
+            {
+                existingPluginSetting = new PluginSetting { Options = new List<PluginOption>() };
+            }
 
-            localSettings.Values[pluginName] = json;
+            PluginOption existingOption = null;
+            if (existingPluginSetting.Options != null)
+            {
+                existingOption = existingPluginSetting.Options.Find(option => option.Name == optionName);
+            }
+
+            if (existingOption != null)
+            {
+                existingOption.Value = optionValue;
+            }
+            else
+            {
+                existingPluginSetting.Options ??= new List<PluginOption>();
+                existingPluginSetting.Options.Add(new PluginOption
+                {
+                    Name = optionName,
+                    Value = optionValue
+                });
+            }
+
+            localSettings.Values[pluginName] = Newtonsoft.Json.JsonConvert.SerializeObject(existingPluginSetting);
         }
+
+
+
 
         private void UpdatePluginSetting(string pluginName, bool settingValue)
         {
             ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
 
-            // Load the existing JSON for this plugin
             string existingJson = (string)localSettings.Values[pluginName];
 
-            // Convert the existing JSON back to PluginSetting object
-            PluginSetting existingPluginSetting = Newtonsoft.Json.JsonConvert.DeserializeObject<PluginSetting>(existingJson);
-
-            // Update the 'Enable' property of the PluginSetting object
-            existingPluginSetting.Enable = settingValue;
-
-            // Convert the updated PluginSetting object back to JSON
-            string updatedJson = Newtonsoft.Json.JsonConvert.SerializeObject(existingPluginSetting);
-
-            // Save the updated JSON
-            localSettings.Values[pluginName] = updatedJson;
+            if (existingJson != null)
+            {
+                PluginSetting existingPluginSetting = Newtonsoft.Json.JsonConvert.DeserializeObject<PluginSetting>(existingJson);
+                existingPluginSetting.Enable = settingValue;
+                string updatedJson = Newtonsoft.Json.JsonConvert.SerializeObject(existingPluginSetting);
+                localSettings.Values[pluginName] = updatedJson;
+            }
+            else
+            {
+                localSettings.Values[pluginName] = Newtonsoft.Json.JsonConvert.SerializeObject(new PluginSetting
+                {
+                    Enable = settingValue,
+                    Options = null
+                }); ;
+            }
         }
 
         private void RestartButton_Click(object sender, RoutedEventArgs e)

@@ -56,8 +56,24 @@ namespace ElevenTube_Music
                             MethodInfo method = pluginType.GetMethod(methodName);
                             if (method != null)
                             {
-                                object instance = Activator.CreateInstance(pluginType);
-                                method.Invoke(instance, new[] { this });
+                                ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+                                if (localSettings.Values[pluginName] != null)
+                                {
+                                    PluginSetting pluginSetting = JsonConvert.DeserializeObject<PluginSetting>(localSettings.Values[pluginName].ToString());
+                                    ParameterInfo[] parameters = method.GetParameters();
+                                    if(parameters[1] != null)
+                                    {
+                                        object instance = Activator.CreateInstance(pluginType);
+                                        object[] methodParams = new object[] { this, pluginSetting.Options };
+
+                                        method.Invoke(instance, methodParams);
+                                    }
+                                    else
+                                    {
+                                        object instance = Activator.CreateInstance(pluginType);
+                                        method.Invoke(instance, new[] { this });
+                                    }
+                                }
                             }
                             else
                             {
