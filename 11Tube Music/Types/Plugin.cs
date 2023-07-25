@@ -50,6 +50,7 @@ namespace ElevenTube_Music.Types
         public string? placeholder { get; set; }
 #nullable disable
         public string description { get; set; }
-
+#nullable enable
+        public string[]? values { get; set; }
     }
 }
