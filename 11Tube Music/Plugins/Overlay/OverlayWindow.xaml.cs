@@ -62,6 +62,37 @@ namespace ElevenTube_Music.Plugins.Overlay
                         RooStackPanel.VerticalAlignment = VerticalAlignment.Bottom;
                     }
                 }
+
+                PluginOption testOption = Options.Find(option => option.Name == "positon");
+                if(testOption != null)
+                { 
+                    Debug.WriteLine("Overlaypositon_" + testOption.Value.ToString());
+                    if(testOption.Value.ToString() == "TopLeft")
+                    {
+                        RooStackPanel.HorizontalAlignment = HorizontalAlignment.Left;
+
+                        RooStackPanel.VerticalAlignment = VerticalAlignment.Top;
+                    }
+                    else if(testOption.Value.ToString()== "TopRight")
+                    {
+                        Debug.WriteLine("TopRight");
+                        RooStackPanel.HorizontalAlignment = HorizontalAlignment.Right;
+
+                        RooStackPanel.VerticalAlignment = VerticalAlignment.Top;
+                    }
+                    else if (testOption.Value.ToString() == "BottomLeft")
+                    {
+                        RooStackPanel.HorizontalAlignment = HorizontalAlignment.Left;
+
+                        RooStackPanel.VerticalAlignment = VerticalAlignment.Bottom;
+                    }
+                    else if(testOption.Value.ToString()=="BottomRight")
+                    {
+                        RooStackPanel.HorizontalAlignment = HorizontalAlignment.Right;
+
+                        RooStackPanel.VerticalAlignment = VerticalAlignment.Bottom;
+                    }
+                }
             }
 
 
