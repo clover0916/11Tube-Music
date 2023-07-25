@@ -51,6 +51,7 @@ namespace ElevenTube_Music.Types
 #nullable disable
         public string description { get; set; }
 #nullable enable
+        public string? default_value { get; set; }
         public string[]? values { get; set; }
     }
 }

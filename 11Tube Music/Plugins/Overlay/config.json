@@ -27,12 +27,14 @@
     {
       "type": "combo",
       "name": "positon",
+      "display_name": "Position",
       "values": [
         "TopLeft",
         "TopRight",
         "BottomLeft",
         "BottomRight"
       ],
+      "default_value": "TopLeft",
       "description": "Position of the Overlay"
     }
   ]

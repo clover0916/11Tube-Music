@@ -122,7 +122,7 @@ namespace ElevenTube_Music.Settings
                             existingPluginSetting = Newtonsoft.Json.JsonConvert.DeserializeObject<PluginSetting>(existingJson);
                         }
 
-                        if (existingPluginSetting != null && existingPluginSetting.Options != null) // Options‚ªnull‚Å‚È‚¢‚±‚Æ‚ð’Ç‰Á
+                        if (existingPluginSetting != null && existingPluginSetting.Options != null)
                         {
                             PluginOption existingOption = existingPluginSetting.Options.Find(o => o.Name == option.name);
 
@@ -178,34 +178,66 @@ namespace ElevenTube_Music.Settings
                         if (existingPluginSetting != null && existingPluginSetting.Options != null)
                         {
                             PluginOption existingOption = existingPluginSetting.Options.Find(o => o.Name == option.name);
-
-                            var optionComboBox = new ComboBox
+                            if (existingOption != null)
                             {
-                                Margin = new Thickness(8, 0, 0, 0),
-                                Tag = option.name
-                            };
 
-
-                            if (option.placeholder != null)
-                            {
-                                optionComboBox.PlaceholderText = option.placeholder;
-                            }
-
-                            if (option.values != null)
-                            {
-                                foreach (var value in option.values)
+                                var optionComboBox = new ComboBox
                                 {
-                                    optionComboBox.Items.Add(value);
+                                    Margin = new Thickness(8, 0, 0, 0),
+                                    Tag = option.name
+                                };
+
+
+                                if (option.placeholder != null)
+                                {
+                                    optionComboBox.PlaceholderText = option.placeholder;
                                 }
-                                int selectedIndex = Array.IndexOf(option.values, existingOption.Value);
-                                optionComboBox.SelectedIndex = selectedIndex >= 0 ? selectedIndex : 0;
+
+                                if (option.values != null)
+                                {
+                                    foreach (var value in option.values)
+                                    {
+                                        optionComboBox.Items.Add(value);
+                                    }
+                                    int selectedIndex = Array.IndexOf(option.values, existingOption.Value);
+                                    optionComboBox.SelectedIndex = selectedIndex >= 0 ? selectedIndex : 0;
+                                }
+
+                                optionComboBox.SelectionChanged += OptionComboBox_SelcetionChanged;
+
+                                options.Add(new PluginOption { Name = option.name, Value = optionComboBox.SelectedItem });
+
+                                optionStackPanel.Children.Add(optionComboBox);
+                            } else
+                            {
+                                var defaultOption = option.default_value;
+
+                                var optionComboBox = new ComboBox
+                                {
+                                    Margin = new Thickness(8, 0, 0, 0),
+                                    Tag = option.name
+                                };
+
+                                if (!string.IsNullOrEmpty(defaultOption))
+                                {
+                                    optionComboBox.PlaceholderText = defaultOption;
+                                }
+
+                                if (option.values != null)
+                                {
+                                    foreach (var value in option.values)
+                                    {
+                                        optionComboBox.Items.Add(value);
+                                    }
+                                    optionComboBox.SelectedIndex = 0;
+                                }
+
+                                optionComboBox.SelectionChanged += OptionComboBox_SelcetionChanged;
+
+                                options.Add(new PluginOption { Name = option.name, Value = optionComboBox.SelectedItem });
+
+                                optionStackPanel.Children.Add(optionComboBox);
                             }
-
-                            optionComboBox.SelectionChanged += OptionComboBox_SelcetionChanged;
-
-                            options.Add(new PluginOption { Name = option.name, Value = optionComboBox.SelectedItem });
-
-                            optionStackPanel.Children.Add(optionComboBox);
                         }
                         else
                         {
