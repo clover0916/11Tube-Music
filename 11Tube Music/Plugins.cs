@@ -61,7 +61,7 @@ namespace ElevenTube_Music
                                 {
                                     PluginSetting pluginSetting = JsonConvert.DeserializeObject<PluginSetting>(localSettings.Values[pluginName].ToString());
                                     ParameterInfo[] parameters = method.GetParameters();
-                                    if(parameters[1] != null)
+                                    if(parameters!=null && parameters.Length>=2 && parameters[1] != null)
                                     {
                                         object instance = Activator.CreateInstance(pluginType);
                                         object[] methodParams = new object[] { this, pluginSetting.Options };
