@@ -62,6 +62,7 @@ namespace ElevenTube_Music.Plugins.Overlay
                         RooStackPanel.VerticalAlignment = VerticalAlignment.Bottom;
                     }
                 }
+
             }
 
 
