@@ -138,6 +138,7 @@ namespace ElevenTube_Music.Plugins.Overlay
         {
             if (IsPaused.paused)
             {
+                ProgressBar.Value = IsPaused.currentTime;
                 timer.Stop();
             }
             else
