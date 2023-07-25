@@ -22,15 +22,47 @@ namespace ElevenTube_Music.Plugins.Overlay
 
             if (Options != null)
             {
-                PluginOption existingOption = Options.Find(option => option.Name == "opacity");
+                PluginOption opacityOption = Options.Find(option => option.Name == "opacity");
 
-
-                if (existingOption != null)
+                if (opacityOption != null)
                 {
-                    RootGrid.Opacity = double.Parse(existingOption.Value as string);
+                    RootGrid.Opacity = double.Parse(opacityOption.Value as string);
                 }
+
+
+                PluginOption positionOption = Options.Find(option => option.Name == "positon");
+
+                if (positionOption != null)
+                {
+                    string position = positionOption.Value as string;
+                    Debug.WriteLine("Overlaypositon_" + position);
+                    if (position == "TopLeft")
+                    {
+                        RooStackPanel.HorizontalAlignment = HorizontalAlignment.Left;
+
+                        RooStackPanel.VerticalAlignment = VerticalAlignment.Top;
+                    }
+                    else if (position == "TopRight")
+                    {
+                        RooStackPanel.HorizontalAlignment = HorizontalAlignment.Right;
+
+                        RooStackPanel.VerticalAlignment = VerticalAlignment.Top;
+                    }
+                    else if (position == "BottomLeft")
+                    {
+                        RooStackPanel.HorizontalAlignment = HorizontalAlignment.Left;
+
+                        RooStackPanel.VerticalAlignment = VerticalAlignment.Bottom;
+                    }
+                    else if (position == "BottomRight")
+                    {
+                        RooStackPanel.HorizontalAlignment = HorizontalAlignment.Right;
+
+                        RooStackPanel.VerticalAlignment = VerticalAlignment.Bottom;
+                    }
+                }
+
             }
-            
 
             var windowHandle = new IntPtr((long)this.AppWindow.Id.Value);
 

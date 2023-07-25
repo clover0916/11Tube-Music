@@ -5,6 +5,7 @@ using Microsoft.UI.Windowing;
 using Vanara.PInvoke;
 using Windows.Graphics;
 using WinRT.Interop;
+using System.Windows.Forms;
 
 namespace ElevenTube_Music.Plugins.Overlay
 {
@@ -14,11 +15,15 @@ namespace ElevenTube_Music.Plugins.Overlay
 
         public void Main(MainWindow window, List<PluginOption> Options)
         {
+            int windowWidth = Screen.PrimaryScreen.WorkingArea.Width;
+
+            int windowHeight = Screen.PrimaryScreen.WorkingArea.Height;
+
             overlayWindow = new OverlayWindow(window, Options);
 
             overlayWindow.AppWindow.SetPresenter(AppWindowPresenterKind.FullScreen);
 
-            overlayWindow.AppWindow.MoveAndResize(new RectInt32(0, 0, 400, 100));
+            overlayWindow.AppWindow.MoveAndResize(new RectInt32(0, 0, windowWidth, windowHeight));
 
             window.Closed += (s, e) => overlayWindow.Close();
 
