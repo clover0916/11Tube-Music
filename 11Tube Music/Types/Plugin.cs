@@ -25,6 +25,7 @@ namespace ElevenTube_Music.Types
         public string version { get; set; }
         public Author author { get; set; }
 #nullable enable
+#nullable enable
         public Option[]? option { get; set; }
 #nullable disable
     }
@@ -50,6 +51,7 @@ namespace ElevenTube_Music.Types
         public string? placeholder { get; set; }
 #nullable disable
         public string description { get; set; }
-
+#nullable enable
+        public string[]? values { get; set; }
     }
 }
