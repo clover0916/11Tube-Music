@@ -44,7 +44,6 @@ namespace ElevenTube_Music.Plugins.Overlay
                     }
                     else if(position== "TopRight")
                     {
-                        Debug.WriteLine("TopRight");
                         RooStackPanel.HorizontalAlignment = HorizontalAlignment.Right;
 
                         RooStackPanel.VerticalAlignment = VerticalAlignment.Top;
