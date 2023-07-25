@@ -2,7 +2,7 @@
   "type": "C#",
   "name": "Overlay",
   "description": "Show overlay on the screen.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": {
     "name": "Clover_Midori",
     "contact": [
@@ -23,6 +23,17 @@
       "display_name": "Opacity",
       "placeholder": "default: 0.6",
       "description": "Opacity of the overlay. (0.0 ~ 1.0)"
+    },
+    {
+      "type": "combo",
+      "name": "positon",
+      "values": [
+        "TopLeft",
+        "TopRight",
+        "BottomLeft",
+        "BottomRight"
+      ],
+      "description": "Position of the Overlay"
     }
   ]
 }
