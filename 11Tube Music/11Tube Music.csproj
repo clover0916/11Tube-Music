@@ -7,51 +7,26 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Platforms>x86;x64;ARM64</Platforms>
     <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
-    <PublishProfile>win10-$(Platform).pubxml</PublishProfile>
+    <PublishProfile>Properties\PublishProfiles\win10-$(Platform).pubxml</PublishProfile>
     <UseWinUI>true</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
     <ApplicationIcon>Assets\favicon.ico</ApplicationIcon>
-    <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
-    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
-    <PackageCertificateThumbprint>6FE8F80E08FDEB1ED9C8D4CEC7061B43057D7F09</PackageCertificateThumbprint>
-    <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+    <DefaultLanguage>ja-JP</DefaultLanguage>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
-    <AppxBundle>Auto</AppxBundle>
+    <AppxBundle>Always</AppxBundle>
+    <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
-    <DefaultLanguage>ja-JP</DefaultLanguage>
-    <AppxBundlePlatforms>x86|x64|arm64</AppxBundlePlatforms>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AppxPackageDir>C:\Users\youhu\source\11Tube Music\11Tube Music\bin\Release\</AppxPackageDir>
-    <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
+    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <PackageCertificateThumbprint>6FE8F80E08FDEB1ED9C8D4CEC7061B43057D7F09</PackageCertificateThumbprint>
+    <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+    <AppInstallerUri>C:\Users\youhu\source\11Tube Music\11Tube Music\AppPackages</AppInstallerUri>
   </PropertyGroup>
-  
-  <ItemGroup>
-    <None Remove="Plugins\AdBlocker.js" />
-    <None Remove="Plugins\AdBlocker\config.json" />
-    <None Remove="Plugins\CinematicLighting\config.json" />
-    <None Remove="Plugins\CinematicLighting\index.js" />
-    <None Remove="Plugins\DiscordRichPresence\config.json" />
-    <None Remove="Plugins\Overlay\config.json" />
-    <None Remove="Plugins\Overlay\OverlayWindow.xaml" />
-    <None Remove="Plugins\Visualizer\config.json" />
-    <None Remove="Plugins\Visualizer\index.js" />
-    <None Remove="preload.js" />
-    <None Remove="SettingsPage.xaml" />
-    <None Remove="Settings\About.xaml" />
-    <None Remove="Settings\Customize.xaml" />
-    <None Remove="Settings\General.xaml" />
-    <None Remove="Settings\Plugins.xaml" />
-  </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Assets\SplashScreen.scale-200.png" />
-    <Content Include="Assets\LockScreenLogo.scale-200.png" />
-    <Content Include="Assets\Square150x150Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="Plugins\AdBlocker\config.json" />
     <Content Include="Plugins\AdBlocker\index.js" />
     <Content Include="Plugins\CinematicLighting\config.json" />
@@ -60,6 +35,7 @@
     <Content Include="Plugins\Overlay\config.json" />
     <Content Include="Plugins\Visualizer\index.js" />
     <Content Include="preload.js" />
+    <Content Include="Plugins\Visualizer\config.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -75,65 +51,7 @@
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
-  <!-- 
-    Defining the "Msix" ProjectCapability here allows the Single-project MSIX Packaging
-    Tools extension to be activated for this project even if the Windows App SDK Nuget
-    package has not yet been restored.
-  -->
-  <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
-    <ProjectCapability Include="Msix" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Settings\Plugins.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Settings\General.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="SettingsPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Settings\About.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Settings\Customize.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-
-  <!-- 
-    Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution 
-    Explorer "Package and Publish" context menu entry to be enabled for this project even if 
-    the Windows App SDK Nuget package has not yet been restored.
-  -->
   <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
     <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="Assets\SNS\**" />
-    <Content Remove="Assets\SNS\**" />
-    <EmbeddedResource Remove="Assets\SNS\**" />
-    <None Remove="Assets\SNS\**" />
-    <Page Remove="Assets\SNS\**" />
-    <PRIResource Remove="Plugins\DiscordRichPresence\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Plugins\Visualizer\config.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Plugins\Overlay\OverlayWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <PRIResource Remove="Assets\SNS\**" />
-  </ItemGroup>
 </Project>
