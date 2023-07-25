@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
 
@@ -144,7 +145,8 @@ namespace ElevenTube_Music.Settings
                             options.Add(new PluginOption { Name = option.name, Value = optionTextBox.Text });
 
                             optionStackPanel.Children.Add(optionTextBox);
-                        } else
+                        }
+                        else
                         {
                             var optionTextBox = new TextBox
                             {
@@ -208,7 +210,8 @@ namespace ElevenTube_Music.Settings
                                 options.Add(new PluginOption { Name = option.name, Value = optionComboBox.SelectedItem });
 
                                 optionStackPanel.Children.Add(optionComboBox);
-                            } else
+                            }
+                            else
                             {
                                 var defaultOption = option.default_value;
 
@@ -319,6 +322,35 @@ namespace ElevenTube_Music.Settings
             authorCard.Content = authorStackPanel;
             expander.Items.Add(authorCard);
 
+            var contributorsCard = new SettingsCard
+            {
+                Header = "Contributors"
+            };
+
+            var contributorsStackPanel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+
+            if (pluginConfig.contributors != null)
+            {
+
+                var contributorsText = new TextBlock
+                {
+                    Margin = new Thickness(0, 0, 8, 0),
+                    IsTextSelectionEnabled = true,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Text = string.Join(", ", pluginConfig.contributors)
+                };
+
+                contributorsStackPanel.Children.Add(contributorsText);
+
+                contributorsCard.Content = contributorsStackPanel;
+
+                expander.Items.Add(contributorsCard);
+            }
+
             var toggleSwitch = new ToggleSwitch();
             PluginSetting previousSetting = LoadPreviousSetting(pluginConfig.name);
             toggleSwitch.IsOn = previousSetting.Enable;
@@ -354,7 +386,7 @@ namespace ElevenTube_Music.Settings
             restartCard.Visibility = Visibility.Visible;
             TextBox textBox = (TextBox)sender;
             StackPanel parent = (StackPanel)VisualTreeHelper.GetParent(textBox);
-            SaveOption(parent.Tag.ToString(),textBox.Tag.ToString(), textBox.Text);
+            SaveOption(parent.Tag.ToString(), textBox.Tag.ToString(), textBox.Text);
         }
 
         private void OptionComboBox_SelcetionChanged(object sender, SelectionChangedEventArgs e)

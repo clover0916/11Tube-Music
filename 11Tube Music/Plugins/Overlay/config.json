@@ -16,6 +16,9 @@
       }
     ]
   },
+  "contributors": [
+    "yosshipaopao"
+  ],
   "option": [
     {
       "type": "input",
