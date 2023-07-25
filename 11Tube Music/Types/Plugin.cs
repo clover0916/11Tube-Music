@@ -25,7 +25,6 @@ namespace ElevenTube_Music.Types
         public string version { get; set; }
         public Author author { get; set; }
 #nullable enable
-#nullable enable
         public Option[]? option { get; set; }
 #nullable disable
     }
