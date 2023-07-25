@@ -164,6 +164,78 @@ namespace ElevenTube_Music.Settings
                             optionStackPanel.Children.Add(optionTextBox);
                         }
                     }
+                    else if(option.type=="combo")
+                    {
+                        ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+                        string existingJson = (string)localSettings.Values[pluginConfig.name];
+                        Debug.WriteLine(existingJson);
+                        PluginSetting existingPluginSetting = null;
+                        if (existingJson != null)
+                        {
+                            existingPluginSetting = Newtonsoft.Json.JsonConvert.DeserializeObject<PluginSetting>(existingJson);
+                        }
+
+                        if (existingPluginSetting != null && existingPluginSetting.Options != null)
+                        {
+                            PluginOption existingOption = existingPluginSetting.Options.Find(o => o.Name == option.name);
+
+                            var optionComboBox=new ComboBox
+                            {
+                                Margin = new Thickness(8, 0, 0, 0),
+                                Tag = option.name
+                            };
+
+
+                            if (option.placeholder != null)
+                            {
+                                optionComboBox.PlaceholderText = option.placeholder;
+                            }
+
+                            if (option.values!=null)
+                            {
+                                foreach (var value in option.values)
+                                {
+                                    optionComboBox.Items.Add(value);
+                                }
+                                int selectedIndex = Array.IndexOf(option.values, existingOption.Value);
+                                optionComboBox.SelectedIndex =selectedIndex>=0?selectedIndex:0;
+                            }
+                            
+                            optionComboBox.SelectionChanged += OptionComboBox_SelcetionChanged;
+
+                            options.Add(new PluginOption { Name = option.name, Value = optionComboBox.SelectedItem });
+
+                            optionStackPanel.Children.Add(optionComboBox);
+                        }
+                        else
+                        {
+                            var optionComboBox = new ComboBox
+                            {
+                                Margin = new Thickness(8, 0, 0, 0),
+                                Tag = option.name
+                            };
+                            if (option.placeholder != null)
+                            {
+                                optionComboBox.PlaceholderText = option.placeholder;
+                            }
+
+                            if (option.values != null)
+                            {
+                                foreach (var value in option.values)
+                                {
+                                    optionComboBox.Items.Add(value);
+                                }
+                                optionComboBox.SelectedIndex = 0;
+                            }
+
+                            optionComboBox.SelectionChanged += OptionComboBox_SelcetionChanged;
+
+                            // Add the option to the list
+                            options.Add(new PluginOption { Name = option.name, Value = optionComboBox.SelectedItem });
+
+                            optionStackPanel.Children.Add(optionComboBox);
+                        }
+                    }
 
                     optionCard.Content = optionStackPanel;
                     expander.Items.Add(optionCard);
@@ -226,6 +298,8 @@ namespace ElevenTube_Music.Settings
             SettingsContainer.Children.Add(expander);
         }
 
+        
+
         private void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
         {
             restartCard.Visibility = Visibility.Visible;
@@ -252,7 +326,13 @@ namespace ElevenTube_Music.Settings
             StackPanel parent = (StackPanel)VisualTreeHelper.GetParent(textBox);
             SaveOption(parent.Tag.ToString(),textBox.Tag.ToString(), textBox.Text);
         }
-
+        private void OptionComboBox_SelcetionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            restartCard.Visibility = Visibility.Visible;
+            ComboBox comboBox = (ComboBox)sender;
+            StackPanel parent = (StackPanel)VisualTreeHelper.GetParent(comboBox);
+            SaveOption(parent.Tag.ToString(), comboBox.Tag.ToString(), comboBox.SelectedItem);
+        }
         private static PluginSetting ConvertToNewFormat(bool enable, bool oldFormat, List<PluginOption> oldOptions)
         {
             if (oldFormat)

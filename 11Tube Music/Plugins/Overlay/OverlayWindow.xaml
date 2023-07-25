@@ -7,28 +7,30 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-    <Grid Padding="8" Opacity="0.6" Background="Transparent" x:Name="RootGrid">
-        <Grid.OpacityTransition >
-            <ScalarTransition Duration="0:0:0.2" />
-        </Grid.OpacityTransition>
-        <Grid.RowDefinitions>
-        <RowDefinition Height="Auto" />
-        <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Border Height="48" Width="48" Grid.Column="0" Grid.Row="0" CornerRadius="4" Margin="8" VerticalAlignment="Top" Translation="0,0,48">
-            <Border.Shadow>
-                <ThemeShadow />
-            </Border.Shadow>
-            <Image Height="48" Width="48" Stretch="UniformToFill" x:Name="ThumbnailImage" />
-        </Border>
-        <StackPanel Grid.Column="1" Grid.Row="0" Padding="8">
-            <TextBlock Text="Unknown" x:Name="SongName" FontSize="20" />
-            <TextBlock Text="Unknown" x:Name="ArtistName" FontSize="15" />
-        </StackPanel>
-        <ProgressBar Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" x:Name="ProgressBar" Margin="16,8" Width="200" HorizontalAlignment="Left" />
-    </Grid>
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="RooStackPanel">
+        <Grid Padding="8" Opacity="0.6" Background="Transparent" x:Name="RootGrid">
+            <Grid.OpacityTransition >
+                <ScalarTransition Duration="0:0:0.2" />
+            </Grid.OpacityTransition>
+            <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border Height="48" Width="48" Grid.Column="0" Grid.Row="0" CornerRadius="4" Margin="8" VerticalAlignment="Top" Translation="0,0,48">
+                <Border.Shadow>
+                    <ThemeShadow />
+                </Border.Shadow>
+                <Image Height="48" Width="48" Stretch="UniformToFill" x:Name="ThumbnailImage" />
+            </Border>
+            <StackPanel Grid.Column="1" Grid.Row="0" Padding="8">
+                <TextBlock Text="Unknown" x:Name="SongName" FontSize="20" />
+                <TextBlock Text="Unknown" x:Name="ArtistName" FontSize="15" />
+            </StackPanel>
+            <ProgressBar Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" x:Name="ProgressBar" Margin="16,8" Width="200" HorizontalAlignment="Left" />
+        </Grid>
+    </StackPanel>
 </Window>
