@@ -1,4 +1,5 @@
 using ElevenTube_Music.Types;
+using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security.Policy;
 using System.Windows.Forms;
@@ -26,9 +28,6 @@ using static Vanara.PInvoke.User32;
 
 namespace ElevenTube_Music.Plugins.MiniPlayer
 {
-    /// <summary>
-    /// An empty window that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class MiniPlayer : Window
     {
         private MainWindow mainWindow;
@@ -58,7 +57,22 @@ namespace ElevenTube_Music.Plugins.MiniPlayer
                     else if (position=="BottomLeft") this.AppWindow.Move(new PointInt32(0, screenHeight-120));
                     else if (position== "BottomRight") this.AppWindow.Move(new PointInt32(screenWidth - 410, screenHeight - 120));
                 }
+
+                PluginOption backdropOption = Options.Find(option => option.Name == "backdrop");
+
+                if (backdropOption != null)
+                {
+                    string backdrop = backdropOption.Value as string;
+
+                    if (backdrop == "Transparent") TransparentHelper.SetTransparent(this, true);
+                    else if (backdrop == "Mica") SystemBackdrop = new MicaBackdrop();
+                    else if (backdrop == "MicaAlt") SystemBackdrop = new MicaBackdrop() { Kind = MicaKind.BaseAlt };
+                    else this.SystemBackdrop = new DesktopAcrylicBackdrop();
+                }
+                else this.SystemBackdrop = new DesktopAcrylicBackdrop();
             }
+            else this.SystemBackdrop = new DesktopAcrylicBackdrop();
+            
 
             SeekBar.Value = 0;
             
@@ -78,9 +92,15 @@ namespace ElevenTube_Music.Plugins.MiniPlayer
             PlayButton.Click += PlayButton_Click;
             PreviousButton.Click += PreviousButton_Click;
             NextButton.Click += NextButton_Click;
-
+            HideButton.Click += HideButton_Click;
             SetWindowLong(windowHandle, WindowLongFlags.GWL_EXSTYLE, (IntPtr)(GetWindowLong(windowHandle, WindowLongFlags.GWL_EXSTYLE) | (int)WindowStylesEx.WS_EX_LAYERED | (int)WindowStylesEx.WS_EX_NOACTIVATE));
         }
+
+        private void HideButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.AppWindow.Hide();
+        }
+
         private DispatcherTimer timer;
         private void HandleVideoDetailReceived(Types.VideoDetail videoDetail)
         {

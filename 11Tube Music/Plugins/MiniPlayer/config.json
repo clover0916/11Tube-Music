@@ -29,6 +29,19 @@
       ],
       "default_value": "BottomRight",
       "description": "Position of the MiniPlayer"
+    },
+    {
+      "type": "combo",
+      "name": "backdrop",
+      "display_name": "BackGround Style",
+      "values": [
+        "Acrylic",
+        "Transparent",
+        "Mica",
+        "MicaAlt"
+      ],
+      "default_value": "Acrylic",
+      "description": "Style of Mini Player's Background"
     }
   ]
 }

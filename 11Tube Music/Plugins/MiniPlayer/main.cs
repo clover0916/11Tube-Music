@@ -18,12 +18,7 @@ namespace ElevenTube_Music.Plugins.MiniPlayer
 
         public void Main(MainWindow window, List<PluginOption> Options)
         {
-            
-
             miniPlayer = new MiniPlayer(window, Options);
-
-            //miniPlayer.AppWindow.SetPresenter(AppWindowPresenterKind.CompactOverlay);
-
 
             OverlappedPresenter op = OverlappedPresenter.Create();
 
