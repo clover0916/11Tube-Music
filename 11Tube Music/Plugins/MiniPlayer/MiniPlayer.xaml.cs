@@ -39,7 +39,7 @@ namespace ElevenTube_Music.Plugins.MiniPlayer
             mainWindow.VideoPaused += HandleVideoPaused;
             var windowHandle = new IntPtr((long)this.AppWindow.Id.Value);
 
-            this.AppWindow.MoveAndResize(new RectInt32(0, 0, 400, 110));
+            this.AppWindow.MoveAndResize(new RectInt32(0, 0, 400, 120));
 
             if (Options != null)
             {
@@ -54,8 +54,8 @@ namespace ElevenTube_Music.Plugins.MiniPlayer
                     
                     if (position=="TopLeft") this.AppWindow.Move(new PointInt32(10, 10));
                     else if (position=="TopRight") this.AppWindow.Move(new PointInt32(screenWidth - 410,0));
-                    else if (position=="BottomLeft") this.AppWindow.Move(new PointInt32(0, screenHeight-120));
-                    else if (position== "BottomRight") this.AppWindow.Move(new PointInt32(screenWidth - 410, screenHeight - 120));
+                    else if (position=="BottomLeft") this.AppWindow.Move(new PointInt32(0, screenHeight-130));
+                    else if (position== "BottomRight") this.AppWindow.Move(new PointInt32(screenWidth - 410, screenHeight - 130));
                 }
 
                 PluginOption backdropOption = Options.Find(option => option.Name == "backdrop");
