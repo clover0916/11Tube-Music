@@ -70,31 +70,135 @@
                     </Button>
                 </Grid>
             </NavigationView.PaneFooter>
-            <NavigationView x:Name="SideNavigation" IsSettingsVisible="False" IsBackButtonVisible="Collapsed" OpenPaneLength="210" ItemInvoked="NavigationViewControl_ItemInvoked">
-                <NavigationView.MenuItems>
-                    <NavigationViewItem Content="Home" Tag="home" Icon="Home"/>
-                    <NavigationViewItem Content="Explore" Tag="explore" Icon="World"/>
-                    <NavigationViewItem Content="Library" Tag="library" Icon="Library" />
-                    <NavigationViewItemSeparator />
-                    <NavigationViewItem Content="Add playlist" Tag="addPlaylist" Icon="Add" />
-                </NavigationView.MenuItems>
+            <NavigationView.Content>
                 <Grid>
-                    <Grid.Resources>
-                        <Storyboard x:Name="LoadedStoryboard">
-                            <DoubleAnimation Duration="0:0:0.5" From="1" To="0" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="loadingBar">
-                                <DoubleAnimation.EasingFunction>
-                                    <CubicEase/>
-                                </DoubleAnimation.EasingFunction>
-                            </DoubleAnimation>
-                        </Storyboard>
-                    </Grid.Resources>
-                    <StackPanel x:Name="loadingBar" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <TextBlock Text="Loading..." Foreground="White" FontSize="16px" Padding="0,0,0,16" HorizontalAlignment="Center"/>
-                        <ProgressBar Width="130" IsIndeterminate="True" />
-                    </StackPanel>
-                    <controls:WebView2 x:Name="WebView" Source="https://music.youtube.com" DefaultBackgroundColor="Transparent" NavigationStarting="WebView_NavigationStarting" CoreWebView2Initialized="WebView_CoreWebView2Initialized" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Visibility="Collapsed" Opacity="0"/>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <NavigationView x:Name="SideNavigation" IsSettingsVisible="False" IsBackButtonVisible="Collapsed" OpenPaneLength="210" ItemInvoked="NavigationViewControl_ItemInvoked">
+                        <NavigationView.MenuItems>
+                            <NavigationViewItem Content="Home" Tag="home" Icon="Home"/>
+                            <NavigationViewItem Content="Explore" Tag="explore" Icon="World"/>
+                            <NavigationViewItem Content="Library" Tag="library" Icon="Library" />
+                            <NavigationViewItemSeparator />
+                            <NavigationViewItem Content="Add playlist" Tag="addPlaylist" Icon="Add" />
+                        </NavigationView.MenuItems>
+                        <Grid>
+                            <Grid.Resources>
+                                <Storyboard x:Name="LoadedStoryboard">
+                                    <DoubleAnimation Duration="0:0:0.5" From="1" To="0" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="loadingBar"/>
+                                </Storyboard>
+                            </Grid.Resources>
+                            <StackPanel x:Name="loadingBar" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <TextBlock Text="Loading..." Foreground="White" FontSize="16px" Padding="0,0,0,16" HorizontalAlignment="Center"/>
+                                <ProgressBar Width="130" IsIndeterminate="True" />
+                            </StackPanel>
+                            <controls:WebView2 x:Name="WebView" Source="https://music.youtube.com" DefaultBackgroundColor="Transparent" NavigationStarting="WebView_NavigationStarting" CoreWebView2Initialized="WebView_CoreWebView2Initialized" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Visibility="Collapsed" Opacity="0"/>
+                        </Grid>
+                    </NavigationView>
+                    <Grid Grid.Column="0" Grid.Row="0" x:Name="SettingRoot" Margin="0,0,0,0" Visibility="Collapsed" Background="{ThemeResource SmokeFillColorDefaultBrush}">
+                        <Grid.Resources>
+                            <Storyboard x:Name="SettingHidden">
+                                <DoubleAnimation Duration="0:0:0.2" From="1" To="0" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="SettingRoot">
+                                    <DoubleAnimation.EasingFunction>
+                                        <CubicEase EasingMode="EaseOut"/>
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="SettingRoot">
+                                    <DiscreteObjectKeyFrame KeyTime="0:0:0.1" Value="Collapsed"/>
+                                </ObjectAnimationUsingKeyFrames>
+                                <DoubleAnimation Duration="0:0:0.2" From="1" To="1.03" Storyboard.TargetProperty="ScaleX" Storyboard.TargetName="ScaleTransform">
+                                    <DoubleAnimation.EasingFunction>
+                                        <CubicEase EasingMode="EaseOut"/>
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                                <DoubleAnimation Duration="0:0:0.2" From="1" To="1.03" Storyboard.TargetProperty="ScaleY" Storyboard.TargetName="ScaleTransform">
+                                    <DoubleAnimation.EasingFunction>
+                                        <CubicEase EasingMode="EaseOut"/>
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                            </Storyboard>
+                            <Storyboard x:Name="SettingShowing">
+                                <DoubleAnimation Duration="0:0:0.2" From="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="SettingRoot">
+                                    <DoubleAnimation.EasingFunction>
+                                        <CubicEase EasingMode="EaseOut"/>
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                                <DoubleAnimation Duration="0:0:0.2" From="1.03" To="1" Storyboard.TargetProperty="ScaleX" Storyboard.TargetName="ScaleTransform">
+                                    <DoubleAnimation.EasingFunction>
+                                        <CubicEase EasingMode="EaseOut"/>
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                                <DoubleAnimation Duration="0:0:0.2" From="1.03" To="1" Storyboard.TargetProperty="ScaleY" Storyboard.TargetName="ScaleTransform">
+                                    <DoubleAnimation.EasingFunction>
+                                        <CubicEase EasingMode="EaseOut"/>
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                            </Storyboard>
+                        </Grid.Resources>
+                        <Grid.KeyboardAccelerators>
+                            <KeyboardAccelerator Key="Escape" Modifiers="None" Invoked="Close_Setting"/>
+                        </Grid.KeyboardAccelerators>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" CornerRadius="8" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="48,32" Translation="0,0,48" RenderTransformOrigin="0.5,0.5">
+                                <Border.RenderTransform>
+                                    <CompositeTransform x:Name="ScaleTransform" ScaleX="1.01" ScaleY="1.01"/>
+                                </Border.RenderTransform>
+                                <Border.Shadow>
+                                    <ThemeShadow />
+                                </Border.Shadow>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Grid Grid.Row="0">
+                                        <TextBlock Text="Settings" FontSize="16px" Margin="24,0,0,0" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                        <Button Click="Close_Setting" Margin="6" HorizontalAlignment="Right">
+                                            <FontIcon Glyph="&#xE711;" FontSize="16px" Margin="4"/>
+                                        </Button>
+                                    </Grid>
+                                    <NavigationView 
+                                        Grid.Row="1"
+                                        x:Name="SettingNavigation" 
+                                        IsBackButtonVisible="Collapsed" 
+                                        IsSettingsVisible="False"
+                                        ItemInvoked="SettingNavigation_ItemInvoked">
+                                        <NavigationView.MenuItems>
+                                            <NavigationViewItem Icon="Home" Content="General" Tag="ElevenTube_Music.Settings.General" />
+                                            <NavigationViewItem Content="Customize" Tag="ElevenTube_Music.Settings.Customize">
+                                                <NavigationViewItem.Icon>
+                                                    <FontIcon Glyph="&#xE771;" />
+                                                </NavigationViewItem.Icon>
+                                            </NavigationViewItem>
+                                            <NavigationViewItem Content="Plugins" Tag="ElevenTube_Music.Settings.Plugins" >
+                                                <NavigationViewItem.Icon>
+                                                    <FontIcon Glyph="&#xEA86;" />
+                                                </NavigationViewItem.Icon>
+                                            </NavigationViewItem>
+                                        </NavigationView.MenuItems>
+                                        <NavigationView.FooterMenuItems>
+                                            <NavigationViewItem Content="About" Tag="ElevenTube_Music.Settings.About">
+                                                <NavigationViewItem.Icon>
+                                                    <FontIcon Glyph="&#xE946;" />
+                                                </NavigationViewItem.Icon>
+                                            </NavigationViewItem>
+                                        </NavigationView.FooterMenuItems>
+                                        <Frame x:Name="contentFrame"/>
+                                    </NavigationView>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Grid>
                 </Grid>
-            </NavigationView>
+            </NavigationView.Content>
         </NavigationView>
     </Grid>
 </Window>
