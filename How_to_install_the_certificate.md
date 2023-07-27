@@ -1,7 +1,7 @@
 # How to install the certificate
 
 ## Obtain the Certificate that signed the App
-1. Right-click on the .appx file
+1. Right-click on the .msix file
 2. Click **Properties**
 3. Click **Digital Signatures**
 4. Select `Clover_Midori` from the list

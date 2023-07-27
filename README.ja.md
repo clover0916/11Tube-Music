@@ -5,8 +5,8 @@ Windows 11向けのYoutube音楽プレーヤー
 - x64
 
 ## インストール方法
-1. [Releases](https://github.com/clover0916/11Tube-Music/releases)から11Tube Musicの最新バージョン（ZIP）をダウンロードします。
-2. ZIPファイルを見つけ、解凍します。
+1. [Releases](https://github.com/clover0916/11Tube-Music/releases)から11Tube Musicの最新バージョン（MSIX）をダウンロードします。
+2. MSIXファイルを見つけます。
 3. 証明書をインストールします。[方法はこちら](https://github.com/clover0916/11Tube-Music/blob/master/How_to_install_the_certificate.ja.md)
 4. APPXファイルをダブルクリックします。
 5. 画面の指示に従ってインストールを完了します。

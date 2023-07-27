@@ -53,6 +53,17 @@ function setupVideoEventListeners(video) {
         };
         window.chrome.webview.postMessage(data);
     };
+    video.onseeking = async () => {
+        rawData = {
+            paused: video.paused,
+            currentTime: video.currentTime,
+        }
+        const data = {
+            type: 'isPaused',
+            data: rawData
+        };
+        window.chrome.webview.postMessage(data);
+    }
 }
 
 function setupLoadstartEventListener(video, api) {
