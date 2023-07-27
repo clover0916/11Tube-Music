@@ -9,7 +9,7 @@
     mc:Ignorable="d">
 
     <StackPanel Margin="8" Opacity="0.6" x:Name="RootGrid">
-        <Grid>
+        <Grid x:Name="MainGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
@@ -34,8 +34,8 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal"  HorizontalAlignment="Right" Margin="0,0,8,8">
-                    <Button x:Name="HideButton">
-                        <FontIcon Glyph="&#xED1A;"/>
+                    <Button x:Name="HideButton" Width="30" Height="15" Padding="0">
+                        <FontIcon Glyph="&#xE70D;" Width="20" Height="15" Margin="0"/>
                     </Button>
                 </StackPanel>
                 <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal"  HorizontalAlignment="Center" Margin="0,0,8,0">
@@ -52,5 +52,8 @@
             </Grid>
         </Grid>
         <Slider x:Name="SeekBar" Margin="8,0"></Slider>
+        <Button x:Name="ShowButton"  Width="40" Height="25" Visibility="Collapsed" Padding="0" Margin="0">
+            <FontIcon Glyph="&#xE70E;" Width="20" Height="15" Margin="10,5"/>
+        </Button>
     </StackPanel>
 </Window>

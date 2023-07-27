@@ -93,12 +93,42 @@ namespace ElevenTube_Music.Plugins.MiniPlayer
             PreviousButton.Click += PreviousButton_Click;
             NextButton.Click += NextButton_Click;
             HideButton.Click += HideButton_Click;
+            ShowButton.Click += ReturnButton_Click;
             SetWindowLong(windowHandle, WindowLongFlags.GWL_EXSTYLE, (IntPtr)(GetWindowLong(windowHandle, WindowLongFlags.GWL_EXSTYLE) | (int)WindowStylesEx.WS_EX_LAYERED | (int)WindowStylesEx.WS_EX_NOACTIVATE));
+        }
+
+        private void ReturnButton_Click(object sender, RoutedEventArgs e)
+        {
+            int screenWidth = Screen.PrimaryScreen.WorkingArea.Width;
+            int screenHeight = Screen.PrimaryScreen.WorkingArea.Height;
+            PointInt32 positon = this.AppWindow.Position;
+            int x = positon.X;
+            int y = positon.Y;
+            if (positon.X > screenWidth / 2) x = screenWidth - 410;
+            if (positon.Y > screenHeight / 2) y = screenHeight - 130;
+            MainGrid.Visibility = Visibility.Visible;
+            SeekBar.Visibility = Visibility.Visible;
+            ShowButton.Visibility = Visibility.Collapsed;
+            RootGrid.Margin = new Thickness(8);
+
+            this.AppWindow.MoveAndResize(new RectInt32(x, y, 400, 120));
         }
 
         private void HideButton_Click(object sender, RoutedEventArgs e)
         {
-            this.AppWindow.Hide();
+            int screenWidth = Screen.PrimaryScreen.WorkingArea.Width;
+            int screenHeight = Screen.PrimaryScreen.WorkingArea.Height;
+            PointInt32 positon = this.AppWindow.Position;
+            int x = positon.X;
+            int y = positon.Y;
+            if (positon.X > screenWidth/2) x= screenWidth-50;
+            if (positon.Y > screenHeight/2) y= screenHeight-35;
+            MainGrid.Visibility = Visibility.Collapsed;
+            SeekBar.Visibility= Visibility.Collapsed;
+            ShowButton.Visibility = Visibility.Visible;
+            RootGrid.Margin= new Thickness(0);
+            
+            this.AppWindow.MoveAndResize(new RectInt32(x, y, 40, 25));
         }
 
         private DispatcherTimer timer;
