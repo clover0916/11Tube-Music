@@ -25,6 +25,10 @@
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppInstallerUri>C:\Users\youhu\source\11Tube Music\11Tube Music\AppPackages</AppInstallerUri>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Plugins\MiniPlayer\config.json" />
+    <None Remove="Plugins\MiniPlayer\MiniPlayer.xaml" />
+  </ItemGroup>
 
   <ItemGroup>
     <Content Include="Plugins\AdBlocker\config.json" />
@@ -32,6 +36,7 @@
     <Content Include="Plugins\CinematicLighting\config.json" />
     <Content Include="Plugins\CinematicLighting\index.js" />
     <Content Include="Plugins\DiscordRichPresence\config.json" />
+    <Content Include="Plugins\MiniPlayer\config.json" />
     <Content Include="Plugins\Overlay\config.json" />
     <Content Include="Plugins\Visualizer\index.js" />
     <Content Include="preload.js" />
@@ -49,6 +54,12 @@
     <PackageReference Include="Vanara.PInvoke.DwmApi" Version="3.4.15" />
     <PackageReference Include="Vanara.PInvoke.User32" Version="3.4.15" />
     <Manifest Include="$(ApplicationManifest)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Plugins\MiniPlayer\MiniPlayer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">

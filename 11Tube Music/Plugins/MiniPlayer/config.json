@@ -1,0 +1,47 @@
+{
+  "type": "C#",
+  "name": "MiniPlayer",
+  "description": "Show Mini Player",
+  "version": "1.0.0",
+  "author": {
+    "name": "yosshipaopao",
+    "contact": [
+      {
+        "name": "Twitter",
+        "url": "https://twitter.com/@yosshipaopao"
+      },
+      {
+        "name": "Github",
+        "url": "https://github.com/yosshipaopao"
+      }
+    ]
+  },
+  "option": [
+    {
+      "type": "combo",
+      "name": "position",
+      "display_name": "Position",
+      "values": [
+        "TopLeft",
+        "TopRight",
+        "BottomLeft",
+        "BottomRight"
+      ],
+      "default_value": "BottomRight",
+      "description": "Position of the MiniPlayer"
+    },
+    {
+      "type": "combo",
+      "name": "backdrop",
+      "display_name": "BackGround Style",
+      "values": [
+        "Acrylic",
+        "Transparent",
+        "Mica",
+        "MicaAlt"
+      ],
+      "default_value": "Acrylic",
+      "description": "Style of Mini Player's Background"
+    }
+  ]
+}
