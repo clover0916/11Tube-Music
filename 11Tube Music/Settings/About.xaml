@@ -41,7 +41,7 @@
             VerticalScrollBarVisibility="Auto"
             VerticalScrollMode="Auto">
             <StackPanel Spacing="{StaticResource SettingsCardSpacing}" Padding="0,16,0,0">
-                <labs:SettingsCard Description="© 2023 Clover_Midori. All rights reserved." Header="11Tube Music" Content="v0.0.5-beta">
+                <labs:SettingsCard Description="© 2023 Clover_Midori. All rights reserved." Header="11Tube Music" Content="v0.0.6-beta">
                     <labs:SettingsCard.HeaderIcon>
                         <ImageIcon Source="/Assets/Square44x44Logo.altform-lightunplated_targetsize-256.png" />
                     </labs:SettingsCard.HeaderIcon>

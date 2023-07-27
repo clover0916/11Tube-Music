@@ -2,8 +2,8 @@
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
 using System;
+using System.Linq;
 
 namespace ElevenTube_Music
 {
@@ -81,32 +81,30 @@ namespace ElevenTube_Music
 
         private void Open_Setting(object sender, RoutedEventArgs e)
         {
-            Window settingsWindow = new()
+            SettingRoot.Opacity = 0;
+            SettingShowing.Begin();
+            SettingRoot.Visibility = Visibility.Visible;
+            SettingNavigation.SelectedItem = SettingNavigation.MenuItems.OfType<NavigationViewItem>().First();
+            contentFrame.Navigate(typeof(Settings.General), null, new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo());
+        }
+
+        private void Close_Setting(object sender, object e)
+        {
+            SettingHidden.Begin();
+        }
+
+        private void SettingNavigation_ItemInvoked(NavigationView sender,
+                      NavigationViewItemInvokedEventArgs args)
+        {
+            if (args.InvokedItemContainer != null && (args.InvokedItemContainer.Tag != null))
             {
-                Content = new SettingsPage(),
-                Title = "Settings",
-            };
-            SolidColorBrush background = Microsoft.UI.Xaml.Application.Current.Resources["ApplicationPageBackgroundThemeBrush"] as SolidColorBrush;
-            IntPtr hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-            IntPtr s_hwnd = WinRT.Interop.WindowNative.GetWindowHandle(settingsWindow);
-            WindowId s_windowId = Win32Interop.GetWindowIdFromWindow(s_hwnd);
-            AppWindow s_Window = AppWindow.GetFromWindowId(s_windowId);
-            s_Window.TitleBar.BackgroundColor = background.Color;
-            s_Window.TitleBar.InactiveBackgroundColor = background.Color;
-            s_Window.TitleBar.ButtonBackgroundColor = background.Color;
-            s_Window.TitleBar.ButtonInactiveBackgroundColor = background.Color;
-            s_Window.Resize(new Windows.Graphics.SizeInt32(1080, 640));
-            s_Window.SetIcon("Assets/favicon.ico");
-
-            SetWindowLongPtr(s_hwnd, -8, hwnd);
-
-            var Presenter = OverlappedPresenter.Create();
-            Presenter.IsModal = true;
-            Presenter.IsMaximizable = false;
-            Presenter.IsMinimizable = false;
-            s_Window.SetPresenter(Presenter);
-
-            settingsWindow.Activate();
+                Type newPage = Type.GetType(args.InvokedItemContainer.Tag.ToString());
+                contentFrame.Navigate(
+                       newPage,
+                       null,
+                       args.RecommendedNavigationTransitionInfo
+                       );
+            }
         }
     }
 }
