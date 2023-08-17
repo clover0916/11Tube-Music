@@ -22,8 +22,8 @@ Windows 11向けのYoutube音楽プレーヤー
 - 直感的なナビゲーションと操作が可能なユーザーフレンドリーなインターフェース
 
 ## アップデート方法
-1. [Releases](https://github.com/clover0916/11Tube-Music/releases)から11Tube Musicの最新バージョン（APPX）をダウンロードします。
-2. APPXファイルを見つけ、ダブルクリックします。
+1. [Releases](https://github.com/clover0916/11Tube-Music/releases)から11Tube Musicの最新バージョン（MSIX）をダウンロードします。
+2. MSIXファイルを見つけ、ダブルクリックします。
 3. 画面の指示に従ってインストールを完了します。
 
 ## トラブルシューティング
