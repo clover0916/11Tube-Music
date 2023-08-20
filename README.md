@@ -21,6 +21,7 @@ Youtube Music for Windows 11
 - Visualizer (Plugin)
 - Cinematic Lighting (Plugin)
 - Overlay (Plugin)
+- MiniPlayer (Plugin)
 - User-friendly interface with intuitive navigation and controls
 
 ## How to update?
