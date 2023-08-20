@@ -24,8 +24,8 @@ Youtube Music for Windows 11
 - User-friendly interface with intuitive navigation and controls
 
 ## How to update?
-1. Download the latest version (APPX) of 11Tube Music from [Releases](https://github.com/clover0916/11Tube-Music/releases).
-2. Locate the APPX file and double-click it.
+1. Download the latest version (MSIX) of 11Tube Music from [Releases](https://github.com/clover0916/11Tube-Music/releases).
+2. Locate the MSIX file and double-click it.
 3. Follow the on-screen instructions to complete the installation process.
 
 ## Troubleshooting

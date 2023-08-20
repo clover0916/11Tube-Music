@@ -281,7 +281,7 @@ namespace ElevenTube_Music.Plugins.MiniPlayer
 
         private void HandleSeekBarChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            if (Math.Abs(e.NewValue - e.OldValue) > 1)
+            if(Math.Round(Math.Abs(e.NewValue - e.OldValue)) > 1)
             {
                 mainWindow.SetPlayerSeek((int)e.NewValue);
             }
