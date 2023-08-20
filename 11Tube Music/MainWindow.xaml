@@ -41,7 +41,10 @@
                             </Flyout>
                         </Button.Flyout>
                     </Button>
-                    <Button Grid.Column="1" Margin="4,8" Padding="8" Background="Transparent" IsEnabled="{x:Bind Volume_Button_IsEnabled}">
+                    <Button Grid.Column="1" Margin="4,8" Padding="8" Background="Transparent" IsEnabled="{x:Bind Volume_Button_IsEnabled}" PointerWheelChanged="Volume_WheelChanged">
+                        <ToolTipService.ToolTip>
+                            <ToolTip Content="{x:Bind Volume}" PlacementRect="0,0,34,16"/>
+                        </ToolTipService.ToolTip>
                         <Button.Content>
                             <FontIcon Glyph="&#xE767;" FontSize="16px" x:Name="Volume_State"/>
                         </Button.Content>

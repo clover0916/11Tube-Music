@@ -13,7 +13,7 @@
     <ApplicationIcon>Assets\favicon.ico</ApplicationIcon>
     <DefaultLanguage>ja-JP</DefaultLanguage>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
+    <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
@@ -24,6 +24,7 @@
     <PackageCertificateThumbprint>6FE8F80E08FDEB1ED9C8D4CEC7061B43057D7F09</PackageCertificateThumbprint>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppInstallerUri>C:\Users\youhu\source\11Tube Music\11Tube Music\AppPackages</AppInstallerUri>
+    <PublishReadyToRun>true</PublishReadyToRun>
   </PropertyGroup>
 
   <ItemGroup>
