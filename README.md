@@ -16,11 +16,12 @@ Youtube Music for Windows 11
 
 ## Features
 - Resume previous session music
-- Stream music videos from YouTube without ads (Plugin)
-- Show Show playing status on Discord (Plugin)
-- Visualizer (Plugin)
-- Cinematic Lighting (Plugin)
-- Overlay (Plugin)
+- Stream music videos from YouTube without ads
+- Show Show playing status on Discord
+- Visualizer
+- Cinematic Lighting
+- Overlay
+- MiniPlayer
 - User-friendly interface with intuitive navigation and controls
 
 ## How to update?
