@@ -13,14 +13,14 @@ namespace ElevenTube_Music
 {
     public sealed partial class MainWindow : Window
     {
-        public async void PauseMusic()
+        public void PauseMusic()
         {
             if (!IsPaused)
             {
                 PlayPauseMusic();
             }
         }
-        public async void PlayMusic()
+        public void PlayMusic()
         {
             if (IsPaused)
             {
