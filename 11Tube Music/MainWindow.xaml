@@ -54,7 +54,7 @@
                                     <Button Padding="12" Margin="0,0,10,0" Background="Transparent" Click="Toggle_Mute">
                                         <FontIcon x:Name="Volume_State_Flyout" Glyph="&#xE767;"  FontSize="16px"/>
                                     </Button>
-                                    <Slider x:Name="volumeSlider" Value="{x:Bind Volume}" Maximum="100" Minimum="0" VerticalAlignment="Center" ValueChanged="Volume_Changed" Width="200"/>
+                                    <Slider x:Name="volumeSlider" Value="{x:Bind Volume}" Maximum="100" Minimum="0" VerticalAlignment="Center" ValueChanged="Volume_Changed" Width="200" PointerWheelChanged="Volume_WheelChanged"/>
                                 </StackPanel>
                             </Flyout>
                         </Button.Flyout>
