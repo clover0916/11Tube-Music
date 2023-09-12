@@ -31,7 +31,7 @@
             x:Name="PageHeader"
             Margin="36,24,36,0"
             Style="{StaticResource TitleTextBlockStyle}"
-            Text="About" />
+            x:Uid="/Settings/About" />
         <ScrollViewer
             x:Name="contentSV"
             Grid.Row="1"
@@ -46,7 +46,7 @@
                         <ImageIcon Source="/Assets/Square44x44Logo.altform-lightunplated_targetsize-256.png" />
                     </labs:SettingsCard.HeaderIcon>
                 </labs:SettingsCard>
-                <labs:SettingsCard Header="Originally" Description="Google Inc.">
+                <labs:SettingsCard x:Uid="/Settings/Originally" Description="Google Inc.">
                     <HyperlinkButton NavigateUri="https://music.youtube.com">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Youtube Music" Padding="0,0,8,0"/>
@@ -54,12 +54,12 @@
                         </StackPanel>
                     </HyperlinkButton>
                 </labs:SettingsCard>
-                <labs:SettingsExpander Header="More">
+                <labs:SettingsExpander x:Uid="/Settings/More">
                     <labs:SettingsExpander.HeaderIcon>
                         <FontIcon Glyph="&#xE712;" />
                     </labs:SettingsExpander.HeaderIcon>
                     <labs:SettingsExpander.Items>
-                        <labs:SettingsCard Header="To clone this repository">
+                        <labs:SettingsCard x:Uid="/Settings/Clone">
                             <TextBlock
                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                 IsTextSelectionEnabled="True"
@@ -68,10 +68,10 @@
                         <labs:SettingsCard
                             HorizontalContentAlignment="Left"
                             ContentAlignment="Vertical"
-                            Header="このプログラムに関して、いかなる問題が発生しても、私は一切責任を負いません。">
+                            x:Uid="/Settings/Disclaimer">
                             <StackPanel Margin="-12,0,0,0" Orientation="Vertical">
-                                <HyperlinkButton Content="利用規約" NavigateUri="https://www.clover-midori.net/ToS" />
-                                <HyperlinkButton Content="プライバシーポリシー" NavigateUri="https://www.clover-midori.net/privacy" />
+                                <HyperlinkButton x:Uid="/Settings/ToS" NavigateUri="https://www.clover-midori.net/ToS" />
+                                <HyperlinkButton x:Uid="/Settings/privacy" NavigateUri="https://www.clover-midori.net/privacy" />
                             </StackPanel>
                         </labs:SettingsCard>
                     </labs:SettingsExpander.Items>

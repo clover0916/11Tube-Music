@@ -33,7 +33,7 @@
             x:Name="PageHeader"
             Margin="36,24,36,0"
             Style="{StaticResource TitleTextBlockStyle}"
-            Text="Customize" />
+            x:Uid="/Settings/Customize" />
         <ScrollViewer
             x:Name="contentSV"
             Grid.Row="1"
@@ -44,7 +44,7 @@
             VerticalScrollMode="Auto">
             <StackPanel Spacing="{StaticResource SettingsCardSpacing}" Padding="0,16,0,0">
                 <StackPanel Orientation="Horizontal">
-                    <Button x:Name="PickAPhotoButton" Content="Open a css file" IsEnabled="False"
+                    <Button x:Name="PickACSSButton" x:Uid="/Settings/PickACSSButton" IsEnabled="False"
                         Click="PickAPhotoButton_Click" Margin="0,0,0,10"/>
                     <TextBlock x:Name="CSSPathTextBlock" TextWrapping="Wrap" Padding="20,5,0,0"/>
                 </StackPanel>

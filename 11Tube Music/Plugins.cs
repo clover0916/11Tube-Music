@@ -90,7 +90,8 @@ namespace ElevenTube_Music
 
             if (!isPlugins)
             {
-                openPluginsButton.Content = "No Plugins";
+                var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
+                openPluginsButton.Content = resourceLoader.GetString("No_Plugins");
             }
         }
 

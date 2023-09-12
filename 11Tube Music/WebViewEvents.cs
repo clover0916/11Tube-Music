@@ -7,6 +7,7 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Microsoft.Windows.ApplicationModel.Resources;
 
 namespace ElevenTube_Music
 {
@@ -67,17 +68,18 @@ namespace ElevenTube_Music
 
         private async void WebView_NavigationStarting(WebView2 sender, CoreWebView2NavigationStartingEventArgs args)
         {
+            var loader = new ResourceLoader();
             if (args.Uri.ToLower().Contains("music.youtube.com/") && isStarted == false)
             {
                 isStarted = true;
                 await Load_Plugins(sender);
 
                 await Task.Delay(1000);
-                PluginLoadingText.Text = "Loaded";
+                PluginLoadingText.Text = loader.GetString("Loaded");
                 PluginLoading.Visibility = Visibility.Collapsed;
                 pluginLoadedCheck.Visibility = Visibility.Visible;
                 await Task.Delay(1000);
-                PluginLoadingText.Text = "Plugins";
+                PluginLoadingText.Text = loader.GetString("Plugins");
                 pluginLoadedCheck.Visibility = Visibility.Collapsed;
             }
 

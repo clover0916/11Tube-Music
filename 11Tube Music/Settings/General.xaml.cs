@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using Windows.Globalization;
 using Windows.Storage;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -44,9 +45,47 @@ namespace ElevenTube_Music.Settings
             restartCard.Visibility = Visibility.Visible;
         }
 
+        private void LanguageCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBoxItem item = (ComboBoxItem)LanguageCombo.SelectedItem;
+            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+            if ((string)localSettings.Values["Language"] != item.Tag.ToString())
+            {
+                ApplicationLanguages.PrimaryLanguageOverride = item.Tag.ToString();
+                localSettings.Values["Language"] = item.Tag.ToString();
+                restartCard.Visibility = Visibility.Visible;
+            }
+        }
+
         private void RestartButton_Click(object sender, RoutedEventArgs e)
         {
             Microsoft.Windows.AppLifecycle.AppInstance.Restart("");
+        }
+
+        private void LanguageCombo_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Check local settings
+            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+            if (localSettings.Values["Language"] == null)
+            {
+                //Get the language from the system
+                string language = ApplicationLanguages.Languages[0];
+
+                localSettings.Values["Language"] = language;
+
+            } else
+            {
+                string language = (string)localSettings.Values["Language"];
+                foreach (ComboBoxItem item in LanguageCombo.Items)
+                {
+                    if (item.Tag.ToString().Contains(language))
+                    {
+                        LanguageCombo.SelectedItem = item;
+                        break;
+                    }
+                }
+            }
         }
     }
 }

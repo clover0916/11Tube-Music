@@ -13,7 +13,6 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" x:Name="LayoutRoot">
         <NavigationView 
             x:Name="NavigationViewControl" 
-            Header="This is Header Text" 
             PaneDisplayMode="Top" 
             AlwaysShowHeader="False" 
             BackRequested="NavigationViewControl_BackRequested" 
@@ -29,7 +28,7 @@
                     <Button Grid.Column="0" x:Name="openPluginsButton" Margin="4,8" Background="Transparent" Click="Open_Plugins_Flyout" IsEnabled="False">
                         <Button.Content>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="Loading" Foreground="White" FontSize="14px" x:Name="PluginLoadingText"/>
+                                <TextBlock x:Uid="Plugin_Loading" Foreground="White" FontSize="14px" x:Name="PluginLoadingText"/>
                                 <ProgressRing IsActive="True" Height="16px" Margin="8,0,0,0" Width="16px" x:Name="PluginLoading"/>
                                 <FontIcon Glyph="&#xE73E;" FontSize="16px" Margin="8,0,0,0" Visibility="Collapsed" x:Name="pluginLoadedCheck"/>
                             </StackPanel>
@@ -83,11 +82,11 @@
                     </Grid.ColumnDefinitions>
                     <NavigationView x:Name="SideNavigation" IsSettingsVisible="False" IsBackButtonVisible="Collapsed" OpenPaneLength="210" ItemInvoked="NavigationViewControl_ItemInvoked">
                         <NavigationView.MenuItems>
-                            <NavigationViewItem Content="Home" Tag="home" Icon="Home"/>
-                            <NavigationViewItem Content="Explore" Tag="explore" Icon="World"/>
-                            <NavigationViewItem Content="Library" Tag="library" Icon="Library" />
+                            <NavigationViewItem x:Uid="Home" Tag="home" Icon="Home"/>
+                            <NavigationViewItem x:Uid="Explore" Tag="explore" Icon="World"/>
+                            <NavigationViewItem x:Uid="Library" Tag="library" Icon="Library" />
                             <NavigationViewItemSeparator />
-                            <NavigationViewItem Content="Add playlist" Tag="addPlaylist" Icon="Add" />
+                            <NavigationViewItem x:Uid="addPlaylist" Tag="addPlaylist" Icon="Add" />
                         </NavigationView.MenuItems>
                         <Grid>
                             <Grid.Resources>
@@ -96,7 +95,7 @@
                                 </Storyboard>
                             </Grid.Resources>
                             <StackPanel x:Name="loadingBar" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                <TextBlock Text="Loading..." Foreground="White" FontSize="16px" Padding="0,0,0,16" HorizontalAlignment="Center"/>
+                                <TextBlock x:Uid="Loading" Foreground="White" FontSize="16px" Padding="0,0,0,16" HorizontalAlignment="Center"/>
                                 <ProgressBar Width="130" IsIndeterminate="True" />
                             </StackPanel>
                             <controls:WebView2 x:Name="WebView" Source="https://music.youtube.com" DefaultBackgroundColor="Transparent" NavigationStarting="WebView_NavigationStarting" CoreWebView2Initialized="WebView_CoreWebView2Initialized" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Visibility="Collapsed" Opacity="0"/>
@@ -163,7 +162,7 @@
                                     </Grid.RowDefinitions>
 
                                     <Grid Grid.Row="0">
-                                        <TextBlock Text="Settings" FontSize="16px" Margin="24,0,0,0" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                        <TextBlock x:Uid="Settings" FontSize="16px" Margin="24,0,0,0" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                         <Button Click="Close_Setting" Margin="6" HorizontalAlignment="Right">
                                             <FontIcon Glyph="&#xE711;" FontSize="16px" Margin="4"/>
                                         </Button>
@@ -175,20 +174,20 @@
                                         IsSettingsVisible="False"
                                         ItemInvoked="SettingNavigation_ItemInvoked">
                                         <NavigationView.MenuItems>
-                                            <NavigationViewItem Icon="Home" Content="General" Tag="ElevenTube_Music.Settings.General" />
-                                            <NavigationViewItem Content="Customize" Tag="ElevenTube_Music.Settings.Customize">
+                                            <NavigationViewItem Icon="Home" x:Uid="Settings_General" Tag="ElevenTube_Music.Settings.General" />
+                                            <NavigationViewItem x:Uid="Settings_Customize" Tag="ElevenTube_Music.Settings.Customize">
                                                 <NavigationViewItem.Icon>
                                                     <FontIcon Glyph="&#xE771;" />
                                                 </NavigationViewItem.Icon>
                                             </NavigationViewItem>
-                                            <NavigationViewItem Content="Plugins" Tag="ElevenTube_Music.Settings.Plugins" >
+                                            <NavigationViewItem x:Uid="Settings_Plugins" Tag="ElevenTube_Music.Settings.Plugins" >
                                                 <NavigationViewItem.Icon>
                                                     <FontIcon Glyph="&#xEA86;" />
                                                 </NavigationViewItem.Icon>
                                             </NavigationViewItem>
                                         </NavigationView.MenuItems>
                                         <NavigationView.FooterMenuItems>
-                                            <NavigationViewItem Content="About" Tag="ElevenTube_Music.Settings.About">
+                                            <NavigationViewItem x:Uid="Settings_About" Tag="ElevenTube_Music.Settings.About">
                                                 <NavigationViewItem.Icon>
                                                     <FontIcon Glyph="&#xE946;" />
                                                 </NavigationViewItem.Icon>
