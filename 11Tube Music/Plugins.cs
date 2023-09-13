@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Microsoft.Windows.ApplicationModel.Resources;
 
 namespace ElevenTube_Music
 {
@@ -28,7 +29,6 @@ namespace ElevenTube_Music
 
             foreach (StorageFolder plugin in plugins)
             {
-                Debug.WriteLine(plugin.Name);
                 StorageFile config = await plugin.GetFileAsync("config.json");
                 string configJson = await FileIO.ReadTextAsync(config);
                 Types.PluginConfig pluginConfig = JsonConvert.DeserializeObject<Types.PluginConfig>(configJson);
@@ -39,7 +39,18 @@ namespace ElevenTube_Music
                     isPlugins = true;
                     Grid grid = CreatePluginGrid(plugin.Name);
                     PluginList.Children.Add(grid);
+                }
+            }
 
+            foreach (StorageFolder plugin in plugins)
+            {
+                Debug.WriteLine(plugin.Name);
+                StorageFile config = await plugin.GetFileAsync("config.json");
+                string configJson = await FileIO.ReadTextAsync(config);
+                Types.PluginConfig pluginConfig = JsonConvert.DeserializeObject<Types.PluginConfig>(configJson);
+
+                if (Plugin_IsEnabled(pluginConfig.name))
+                {  
                     if (pluginConfig.type == "Javascript")
                     {
                         StorageFile file = await plugin.GetFileAsync("index.js");
@@ -90,8 +101,8 @@ namespace ElevenTube_Music
 
             if (!isPlugins)
             {
-                var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
-                openPluginsButton.Content = resourceLoader.GetString("No_Plugins");
+                var loader = new ResourceLoader();
+                openPluginsButton.Content = loader.GetString("No_Plugins");
             }
         }
 
