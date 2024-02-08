@@ -30,15 +30,9 @@ namespace ElevenTube_Music.Plugins.DiscordRichPresence
 
             client.Logger = new ConsoleLogger() { Level = LogLevel.Warning };
 
-            client.OnReady += (sender, e) =>
-            {
-                Debug.WriteLine("Received Ready from user {0}", e.User.Username);
-            };
+            client.OnReady += (sender, e) => Debug.WriteLine("Received Ready from user {0}", e.User.Username);
 
-            client.OnPresenceUpdate += (sender, e) =>
-            {
-                Debug.WriteLine("Received Update! {0}", e.Presence);
-            };
+            client.OnPresenceUpdate += (sender, e) => Debug.WriteLine("Received Update! {0}", e.Presence);
 
             client.Initialize();
 
