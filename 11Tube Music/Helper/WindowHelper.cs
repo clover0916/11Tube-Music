@@ -52,7 +52,7 @@ namespace ElevenTube_Music.Helper
             return null;
         }
 
-        static public List<Window> ActiveWindows { get { return _activeWindows; } }
+        static public List<Window> ActiveWindows { get => _activeWindows; }
 
         static private List<Window> _activeWindows = new List<Window>();
     }
