@@ -52,7 +52,7 @@ namespace ElevenTube_Music
             {
                 localSettings.Values["IsSaveSession"] = true;
             }
-            if ((bool)localSettings.Values["IsSaveSession"] == true)
+            if ((bool)localSettings.Values["IsSaveSession"])
             {
                 if (localSettings.Values["LastUrl"] != null)
                 {
@@ -69,7 +69,7 @@ namespace ElevenTube_Music
         private async void WebView_NavigationStarting(WebView2 sender, CoreWebView2NavigationStartingEventArgs args)
         {
             var loader = new ResourceLoader();
-            if (args.Uri.ToLower().Contains("music.youtube.com/") && isStarted == false)
+            if (args.Uri.ToLower().Contains("music.youtube.com/") && !isStarted)
             {
                 isStarted = true;
                 await Load_Plugins(sender);
