@@ -46,7 +46,7 @@ namespace ElevenTube_Music.Plugins.MiniPlayer
 
         private static WinDispatcherQueueController InitializeCoreDispatcher()
         {
-            DispatcherQueueOptions options = new DispatcherQueueOptions();
+            DispatcherQueueOptions options = new();
             options.apartmentType = DISPATCHERQUEUE_THREAD_APARTMENTTYPE.DQTAT_COM_STA;
             options.threadType = DISPATCHERQUEUE_THREAD_TYPE.DQTYPE_THREAD_CURRENT;
             options.dwSize = Marshal.SizeOf(typeof(DispatcherQueueOptions));

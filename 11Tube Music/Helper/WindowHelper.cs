@@ -14,10 +14,10 @@ namespace ElevenTube_Music.Helper
     {
         static public Window CreateWindow()
         {
-            Window newWindow = new Window
-            {
-                SystemBackdrop = new MicaBackdrop()
-            };
+            Window newWindow = new()
+{
+    SystemBackdrop = new MicaBackdrop()
+};
             TrackWindow(newWindow);
             return newWindow;
         }
