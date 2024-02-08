@@ -1,4 +1,4 @@
-﻿using DiscordRPC;
+using DiscordRPC;
 using DiscordRPC.Logging;
 using ElevenTube_Music.Types;
 using System;
@@ -18,8 +18,7 @@ namespace ElevenTube_Music.Plugins.DiscordRichPresence
             Presence = new RichPresence()
             {
                 Details = "Nothing is playing",
-                Buttons = new Button[]
-                {
+                Buttons = new[]                {
                     new Button() { Label = "Get 11Tube Music", Url = "https://github.com/clover0916/11Tube-Music" }
                 }
             };
@@ -55,8 +54,7 @@ namespace ElevenTube_Music.Plugins.DiscordRichPresence
             Presence.Assets.LargeImageText = VideoDetail.title;
             Presence.Assets.SmallImageKey = "play";
             Presence.Assets.SmallImageText = "Playing";
-            Presence.Buttons = new Button[]
-            {
+            Presence.Buttons = new[]            {
                 new Button() { Label = "Listen on YouTube", Url = "https://music.youtube.com/watch?v=" + VideoDetail.videoId },
                 new Button() { Label = "Get 11Tube Music", Url = "https://github.com/clover0916/11Tube-Music" }
             };
