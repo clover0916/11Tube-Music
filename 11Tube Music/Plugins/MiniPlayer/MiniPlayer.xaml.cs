@@ -23,7 +23,7 @@ namespace ElevenTube_Music.Plugins.MiniPlayer
         private int lastY;
         private string HiddenIcon = "\uE973";
         private string ShowIcon = "\uE974";
-        private Thickness hiddenPadding = new Thickness(10, 10, 4, 10);
+        private Thickness hiddenPadding = new(10, 10, 4, 10);
 
         WindowsSystemDispatcherQueueHelper wsdqHelper;
         Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController acrylicController;
