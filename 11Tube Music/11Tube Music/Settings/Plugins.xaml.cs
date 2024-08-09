@@ -1,4 +1,4 @@
-using CommunityToolkit.Labs.WinUI;
+using CommunityToolkit.WinUI.Controls;
 using ElevenTube_Music.Types;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
