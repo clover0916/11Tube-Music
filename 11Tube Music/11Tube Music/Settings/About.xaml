@@ -6,7 +6,8 @@
     xmlns:local="using:ElevenTube_Music.Settings"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:labs="using:CommunityToolkit.Labs.WinUI"
+    xmlns:ui="using:CommunityToolkit.WinUI"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     mc:Ignorable="d"
     >
     <Page.Resources>
@@ -41,31 +42,31 @@
             VerticalScrollBarVisibility="Auto"
             VerticalScrollMode="Auto">
             <StackPanel Spacing="{StaticResource SettingsCardSpacing}" Padding="0,16,0,0">
-                <labs:SettingsCard Description="© 2023 Clover_Midori. All rights reserved." Header="11Tube Music" Content="v0.0.8-beta">
-                    <labs:SettingsCard.HeaderIcon>
+                <controls:SettingsCard Description="© 2023 Clover_Midori. All rights reserved." Header="11Tube Music" Content="v0.0.8-beta">
+                    <controls:SettingsCard.HeaderIcon>
                         <ImageIcon Source="/Assets/Square44x44Logo.altform-lightunplated_targetsize-256.png" />
-                    </labs:SettingsCard.HeaderIcon>
-                </labs:SettingsCard>
-                <labs:SettingsCard x:Uid="/Settings/Originally" Description="Google Inc.">
+                    </controls:SettingsCard.HeaderIcon>
+                </controls:SettingsCard>
+                <controls:SettingsCard x:Uid="/Settings/Originally" Description="Google Inc.">
                     <HyperlinkButton NavigateUri="https://music.youtube.com">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Youtube Music" Padding="0,0,8,0"/>
                             <FontIcon Glyph="&#xE8A7;" FontSize="12px"/>
                         </StackPanel>
                     </HyperlinkButton>
-                </labs:SettingsCard>
-                <labs:SettingsExpander x:Uid="/Settings/More">
-                    <labs:SettingsExpander.HeaderIcon>
+                </controls:SettingsCard>
+                <controls:SettingsExpander x:Uid="/Settings/More">
+                    <controls:SettingsExpander.HeaderIcon>
                         <FontIcon Glyph="&#xE712;" />
-                    </labs:SettingsExpander.HeaderIcon>
-                    <labs:SettingsExpander.Items>
-                        <labs:SettingsCard x:Uid="/Settings/Clone">
+                    </controls:SettingsExpander.HeaderIcon>
+                    <controls:SettingsExpander.Items>
+                        <controls:SettingsCard x:Uid="/Settings/Clone">
                             <TextBlock
                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                 IsTextSelectionEnabled="True"
                                 Text="git clone https://github.com/clover0916/11Tube-Music" />
-                        </labs:SettingsCard>
-                        <labs:SettingsCard
+                        </controls:SettingsCard>
+                        <controls:SettingsCard
                             HorizontalContentAlignment="Left"
                             ContentAlignment="Vertical"
                             x:Uid="/Settings/Disclaimer">
@@ -73,9 +74,9 @@
                                 <HyperlinkButton x:Uid="/Settings/ToS" NavigateUri="https://www.clover-midori.net/ToS" />
                                 <HyperlinkButton x:Uid="/Settings/privacy" NavigateUri="https://www.clover-midori.net/privacy" />
                             </StackPanel>
-                        </labs:SettingsCard>
-                    </labs:SettingsExpander.Items>
-                </labs:SettingsExpander>
+                        </controls:SettingsCard>
+                    </controls:SettingsExpander.Items>
+                </controls:SettingsExpander>
             </StackPanel>
         </ScrollViewer>
     </Grid>

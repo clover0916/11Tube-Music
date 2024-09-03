@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "11Tube Music", "11Tube Music\11Tube Music.csproj", "{6330FDE1-A73B-4A07-ADB3-FCCBB947CE2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "11Tube Music", "11Tube Music\11Tube Music\11Tube Music.csproj", "{6330FDE1-A73B-4A07-ADB3-FCCBB947CE2C}"
+EndProject
+Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "11Tube Music (Package)", "11Tube Music\11Tube Music (Package)\11Tube Music (Package).wapproj", "{4016C38A-1638-49CD-91E3-D99428351929}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,24 @@ Global
 		{6330FDE1-A73B-4A07-ADB3-FCCBB947CE2C}.Release|x86.ActiveCfg = Release|x86
 		{6330FDE1-A73B-4A07-ADB3-FCCBB947CE2C}.Release|x86.Build.0 = Release|x86
 		{6330FDE1-A73B-4A07-ADB3-FCCBB947CE2C}.Release|x86.Deploy.0 = Release|x86
+		{4016C38A-1638-49CD-91E3-D99428351929}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{4016C38A-1638-49CD-91E3-D99428351929}.Debug|ARM64.Build.0 = Debug|ARM64
+		{4016C38A-1638-49CD-91E3-D99428351929}.Debug|ARM64.Deploy.0 = Debug|ARM64
+		{4016C38A-1638-49CD-91E3-D99428351929}.Debug|x64.ActiveCfg = Debug|x64
+		{4016C38A-1638-49CD-91E3-D99428351929}.Debug|x64.Build.0 = Debug|x64
+		{4016C38A-1638-49CD-91E3-D99428351929}.Debug|x64.Deploy.0 = Debug|x64
+		{4016C38A-1638-49CD-91E3-D99428351929}.Debug|x86.ActiveCfg = Debug|x86
+		{4016C38A-1638-49CD-91E3-D99428351929}.Debug|x86.Build.0 = Debug|x86
+		{4016C38A-1638-49CD-91E3-D99428351929}.Debug|x86.Deploy.0 = Debug|x86
+		{4016C38A-1638-49CD-91E3-D99428351929}.Release|ARM64.ActiveCfg = Release|ARM64
+		{4016C38A-1638-49CD-91E3-D99428351929}.Release|ARM64.Build.0 = Release|ARM64
+		{4016C38A-1638-49CD-91E3-D99428351929}.Release|ARM64.Deploy.0 = Release|ARM64
+		{4016C38A-1638-49CD-91E3-D99428351929}.Release|x64.ActiveCfg = Release|x64
+		{4016C38A-1638-49CD-91E3-D99428351929}.Release|x64.Build.0 = Release|x64
+		{4016C38A-1638-49CD-91E3-D99428351929}.Release|x64.Deploy.0 = Release|x64
+		{4016C38A-1638-49CD-91E3-D99428351929}.Release|x86.ActiveCfg = Release|x86
+		{4016C38A-1638-49CD-91E3-D99428351929}.Release|x86.Build.0 = Release|x86
+		{4016C38A-1638-49CD-91E3-D99428351929}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

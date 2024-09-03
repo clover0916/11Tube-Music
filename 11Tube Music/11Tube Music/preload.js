@@ -142,9 +142,13 @@ try {
     hideElementWithObserver('FEmusic_library_landing');
     hideElementWithObserver('SPunlimited');
 
+    const escapeHTMLPolicy = trustedTypes.createPolicy("default", {
+        createHTML: (string) => string
+    });
+
     var header = document.querySelector("head");
     var style = document.createElement("style");
-    style.innerHTML = `
+    style.innerHTML = escapeHTMLPolicy.createHTML(`
         #content-wrapper {
             margin-left: 0 !important;
         }
@@ -180,7 +184,7 @@ try {
             padding-left: 100px !important;
             flex-shrink: 1;
         }
-    `;
+    `);
 
     header.appendChild(style);
 
