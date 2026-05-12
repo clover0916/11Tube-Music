@@ -16,7 +16,14 @@ namespace ElevenTube_Music
 {
     public sealed partial class MainWindow : Window
     {
+        private sealed class PluginLoadItem
+        {
+            public StorageFolder Folder { get; init; }
+            public PluginConfig Config { get; init; }
+        }
+
         private IReadOnlyList<StorageFolder> plugins;
+        private readonly Dictionary<string, Grid> pluginGrids = new();
 
         private async Task Load_Plugins(WebView2 sender)
         {
@@ -25,85 +32,211 @@ namespace ElevenTube_Music
 
             UpgradeSettingsIfNeeded(plugins);
 
-            bool isPlugins = false;
+            pluginGrids.Clear();
+            PluginList.Children.Clear();
+
+            var enabledPlugins = new List<PluginLoadItem>();
 
             foreach (StorageFolder plugin in plugins)
             {
-                StorageFile config = await plugin.GetFileAsync("config.json");
-                string configJson = await FileIO.ReadTextAsync(config);
-                Types.PluginConfig pluginConfig = JsonConvert.DeserializeObject<Types.PluginConfig>(configJson);
-
-                if (Plugin_IsEnabled(pluginConfig.name))
+                try
                 {
-                    openPluginsButton.IsEnabled = true;
-                    isPlugins = true;
-                    Grid grid = CreatePluginGrid(plugin.Name);
-                    PluginList.Children.Add(grid);
+                    StorageFile config = await plugin.GetFileAsync("config.json");
+                    string configJson = await FileIO.ReadTextAsync(config);
+                    PluginConfig pluginConfig = JsonConvert.DeserializeObject<PluginConfig>(configJson);
+
+                    if (pluginConfig != null && Plugin_IsEnabled(pluginConfig.name))
+                    {
+                        Grid grid = CreatePluginGrid(plugin.Name);
+                        pluginGrids[plugin.Name] = grid;
+                        PluginList.Children.Add(grid);
+                        enabledPlugins.Add(new PluginLoadItem { Folder = plugin, Config = pluginConfig });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Plugin metadata load failed: {plugin.Name} - {ex}");
                 }
             }
 
-            foreach (StorageFolder plugin in plugins)
-            {
-                Debug.WriteLine(plugin.Name);
-                StorageFile config = await plugin.GetFileAsync("config.json");
-                string configJson = await FileIO.ReadTextAsync(config);
-                Types.PluginConfig pluginConfig = JsonConvert.DeserializeObject<Types.PluginConfig>(configJson);
-
-                if (Plugin_IsEnabled(pluginConfig.name))
-                {  
-                    if (pluginConfig.type == "Javascript")
-                    {
-                        StorageFile file = await plugin.GetFileAsync("index.js");
-                        string text = await FileIO.ReadTextAsync(file);
-                        await sender.CoreWebView2.ExecuteScriptAsync(text);
-                    }
-                    else if (pluginConfig.type == "C#")
-                    {
-                        string pluginName = pluginConfig.name;
-                        string methodName = "Main";
-                        Type pluginType = Type.GetType("ElevenTube_Music.Plugins." + pluginName + ".main");
-                        if (pluginType != null)
-                        {
-                            MethodInfo method = pluginType.GetMethod(methodName);
-                            if (method != null)
-                            {
-                                ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-                                if (localSettings.Values[pluginName] != null)
-                                {
-                                    PluginSetting pluginSetting = JsonConvert.DeserializeObject<PluginSetting>(localSettings.Values[pluginName].ToString());
-                                    ParameterInfo[] parameters = method.GetParameters();
-                                    if(parameters.Length>=2 && parameters[1] != null)
-                                    {
-                                        object instance = Activator.CreateInstance(pluginType);
-                                        object[] methodParams = new object[] { this, pluginSetting.Options };
-
-                                        method.Invoke(instance, methodParams);
-                                    }
-                                    else
-                                    {
-                                        object instance = Activator.CreateInstance(pluginType);
-                                        method.Invoke(instance, new[] { this });
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                Debug.WriteLine("指定されたメソッドが見つかりませんでした。");
-                            }
-                        }
-                        else
-                        {
-                            Debug.WriteLine("指定されたプラグインが見つかりませんでした。");
-                        }
-                    }
-                }
-            }
-
-            if (!isPlugins)
+            if (enabledPlugins.Count == 0)
             {
                 var loader = new ResourceLoader();
                 openPluginsButton.Content = loader.GetString("No_Plugins");
+                openPluginsButton.IsEnabled = false;
+                return;
             }
+
+            openPluginsButton.IsEnabled = true;
+
+            var loadTasks = new List<Task>(enabledPlugins.Count);
+            foreach (PluginLoadItem plugin in enabledPlugins)
+            {
+                loadTasks.Add(LoadPluginSafely(sender, plugin));
+            }
+
+            await Task.WhenAll(loadTasks);
+        }
+
+        private async Task LoadPluginSafely(WebView2 sender, PluginLoadItem plugin)
+        {
+            try
+            {
+                Debug.WriteLine(plugin.Folder.Name);
+
+                if (plugin.Config.type == "Javascript")
+                {
+                    StorageFile file = await plugin.Folder.GetFileAsync("index.js");
+                    string text = await FileIO.ReadTextAsync(file);
+                    await sender.CoreWebView2.ExecuteScriptAsync(text).AsTask().WaitAsync(TimeSpan.FromSeconds(10));
+                }
+                else if (plugin.Config.type == "C#")
+                {
+                    string pluginName = plugin.Config.name;
+                    string methodName = "Main";
+                    Type pluginType = Type.GetType("ElevenTube_Music.Plugins." + pluginName + ".main");
+                    if (pluginType == null)
+                    {
+                        throw new InvalidOperationException("指定されたプラグインが見つかりませんでした。");
+                    }
+
+                    MethodInfo method = pluginType.GetMethod(methodName);
+                    if (method == null)
+                    {
+                        throw new MissingMethodException("指定されたメソッドが見つかりませんでした。");
+                    }
+
+                    PluginSetting pluginSetting = GetPluginSetting(pluginName);
+                    ParameterInfo[] parameters = method.GetParameters();
+                    object instance = Activator.CreateInstance(pluginType);
+                    if (instance == null)
+                    {
+                        throw new InvalidOperationException("プラグインのインスタンス生成に失敗しました。");
+                    }
+
+                    var context = new PluginContext(this);
+                    var store = PlaybackStateStore.Instance;
+                    object[] args;
+                    if (parameters.Length >= 3)
+                    {
+                        args = new object[] { store, context, pluginSetting.Options };
+                    }
+                    else
+                    {
+                        args = new object[] { store, context };
+                    }
+
+                    await InvokePluginMethodOnUiThread(method, instance, args).WaitAsync(TimeSpan.FromSeconds(10));
+                }
+
+                SetPluginGridStatus(plugin.Folder.Name, true);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Plugin load failed: {plugin.Folder.Name} - {ex}");
+                SetPluginGridStatus(plugin.Folder.Name, false);
+            }
+        }
+
+        private Task InvokePluginMethodOnUiThread(MethodInfo method, object instance, object[] args)
+        {
+            return RunOnUiThreadAsync(async () =>
+            {
+                object result = method.Invoke(instance, args);
+                if (result is Task taskResult)
+                {
+                    await taskResult;
+                }
+            });
+        }
+
+        private Task RunOnUiThreadAsync(Func<Task> action)
+        {
+            if (DispatcherQueue.HasThreadAccess)
+            {
+                return action();
+            }
+
+            var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            bool enqueued = DispatcherQueue.TryEnqueue(async () =>
+            {
+                try
+                {
+                    await action();
+                    tcs.SetResult();
+                }
+                catch (Exception ex)
+                {
+                    tcs.SetException(ex);
+                }
+            });
+
+            if (!enqueued)
+            {
+                tcs.SetException(new InvalidOperationException("UI スレッドへの処理登録に失敗しました。"));
+            }
+
+            return tcs.Task;
+        }
+
+        private static PluginSetting GetPluginSetting(string pluginName)
+        {
+            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+            if (localSettings.Values[pluginName] is string json && !string.IsNullOrWhiteSpace(json))
+            {
+                PluginSetting pluginSetting = JsonConvert.DeserializeObject<PluginSetting>(json);
+                if (pluginSetting != null)
+                {
+                    pluginSetting.Options ??= new List<PluginOption>();
+                    return pluginSetting;
+                }
+            }
+
+            return new PluginSetting
+            {
+                Enable = true,
+                Options = new List<PluginOption>()
+            };
+        }
+
+        private void SetPluginGridStatus(string pluginFolderName, bool isLoaded)
+        {
+            if (!pluginGrids.TryGetValue(pluginFolderName, out Grid grid))
+            {
+                return;
+            }
+
+            void UpdateUi()
+            {
+                TextBlock textBlock = grid.Children[0] as TextBlock;
+                ProgressRing progressRing = grid.Children[1] as ProgressRing;
+                FontIcon icon = grid.Children[2] as FontIcon;
+
+                if (textBlock != null)
+                {
+                    textBlock.Text = (isLoaded ? "Loaded " : "Failed ") + pluginFolderName;
+                }
+
+                if (progressRing != null)
+                {
+                    progressRing.Visibility = Visibility.Collapsed;
+                    progressRing.IsActive = false;
+                }
+
+                if (icon != null)
+                {
+                    icon.Glyph = isLoaded ? "\uE73E" : "\uEA39";
+                    icon.Visibility = Visibility.Visible;
+                }
+            }
+
+            if (DispatcherQueue.HasThreadAccess)
+            {
+                UpdateUi();
+                return;
+            }
+
+            DispatcherQueue.TryEnqueue(UpdateUi);
         }
 
         private void UpgradeSettingsIfNeeded(IReadOnlyList<StorageFolder> plugins)
@@ -111,23 +244,19 @@ namespace ElevenTube_Music
             ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
             foreach (StorageFolder plugin in plugins)
             {
-                // Check if the existing setting is a bool value (old format)
                 if (localSettings.Values[plugin.Name] is bool existingValue)
                 {
-                    // Convert the old bool value to the new format with a list of PluginOption
                     var options = new List<PluginOption>
-                        {
-                            new PluginOption { Name = "Enable", Value = existingValue }
-                        };
+                    {
+                        new PluginOption { Name = "Enable", Value = existingValue }
+                    };
 
-                    // Create the PluginSetting object with the new format
                     var pluginSetting = new PluginSetting
                     {
                         Enable = existingValue,
                         Options = options
                     };
 
-                    // Convert the PluginSetting object to JSON and save it as the new format
                     string json = Newtonsoft.Json.JsonConvert.SerializeObject(pluginSetting);
                     localSettings.Values[plugin.Name] = json;
                 }
@@ -137,17 +266,21 @@ namespace ElevenTube_Music
         private static bool Plugin_IsEnabled(string pluginName)
         {
             ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            if (localSettings.Values[pluginName] != null)
+            try
             {
-                PluginSetting pluginSetting = JsonConvert.DeserializeObject<PluginSetting>(localSettings.Values[pluginName].ToString());
-                return pluginSetting.Enable;
+                if (localSettings.Values[pluginName] is string json && !string.IsNullOrWhiteSpace(json))
+                {
+                    PluginSetting pluginSetting = JsonConvert.DeserializeObject<PluginSetting>(json);
+                    return pluginSetting?.Enable == true;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return false;
+                Debug.WriteLine($"Plugin setting read failed: {pluginName} - {ex}");
             }
-        }
 
+            return false;
+        }
 
         private static Grid CreatePluginGrid(string pluginName)
         {
@@ -205,23 +338,8 @@ namespace ElevenTube_Music
             return grid;
         }
 
-        private async void Open_Plugins_Flyout(object sender, RoutedEventArgs e)
+        private void Open_Plugins_Flyout(object sender, RoutedEventArgs e)
         {
-            await Task.Delay(500);
-            foreach (StorageFolder plugin in plugins)
-            {
-                Grid grid = PluginList.FindName(plugin.Name) as Grid;
-                if (grid == null)
-                {
-                    return;
-                }
-                TextBlock textBlock = grid.Children[0] as TextBlock;
-                textBlock.Text = "Loaded " + plugin.Name;
-                ProgressRing progressRing = grid.Children[1] as ProgressRing;
-                progressRing.Visibility = Visibility.Collapsed;
-                FontIcon icon = grid.Children[2] as FontIcon;
-                icon.Visibility = Visibility.Visible;
-            }
         }
     }
 }

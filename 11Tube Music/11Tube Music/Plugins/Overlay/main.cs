@@ -13,19 +13,19 @@ namespace ElevenTube_Music.Plugins.Overlay
     {
         private OverlayWindow overlayWindow;
 
-        public void Main(MainWindow window, List<PluginOption> Options)
+        public void Main(PlaybackStateStore store, PluginContext context, List<PluginOption> options)
         {
             int windowWidth = Screen.PrimaryScreen.WorkingArea.Width;
 
             int windowHeight = Screen.PrimaryScreen.WorkingArea.Height;
 
-            overlayWindow = new OverlayWindow(window, Options);
+            overlayWindow = new OverlayWindow(store, context, options);
 
             overlayWindow.AppWindow.SetPresenter(AppWindowPresenterKind.FullScreen);
 
             overlayWindow.AppWindow.MoveAndResize(new RectInt32(0, 0, windowWidth, windowHeight));
 
-            window.Closed += (s, e) => overlayWindow.Close();
+            context.MainWindow.Closed += (s, e) => overlayWindow.Close();
 
             var windowHandle = new IntPtr((long)overlayWindow.AppWindow.Id.Value);
 

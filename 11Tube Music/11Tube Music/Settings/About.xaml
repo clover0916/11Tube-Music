@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Page
     x:Class="ElevenTube_Music.Settings.About"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -42,7 +42,7 @@
             VerticalScrollBarVisibility="Auto"
             VerticalScrollMode="Auto">
             <StackPanel Spacing="{StaticResource SettingsCardSpacing}" Padding="0,16,0,0">
-                <controls:SettingsCard Description="© 2023 Clover_Midori. All rights reserved." Header="11Tube Music" Content="v0.0.10-beta">
+                <controls:SettingsCard Description="Â© 2023 Clover_Midori. All rights reserved." Header="11Tube Music" Content="v0.0.11-beta">
                     <controls:SettingsCard.HeaderIcon>
                         <ImageIcon Source="/Assets/Square44x44Logo.altform-lightunplated_targetsize-256.png" />
                     </controls:SettingsCard.HeaderIcon>

@@ -10,11 +10,15 @@ namespace ElevenTube_Music.Plugins.DiscordRichPresence
     {
         const string CLIENT_ID = "1126193880493199431";
         public DiscordRpcClient client;
+        private PlaybackStateStore playbackStore;
+        private PluginContext pluginContext;
         private VideoDetail VideoDetail;
         private RichPresence Presence;
 
-        public void Main(MainWindow window)
+        public void Main(PlaybackStateStore store, PluginContext context)
         {
+            playbackStore = store;
+            pluginContext = context;
             Presence = new RichPresence()
             {
                 Details = "Nothing is playing",
@@ -22,8 +26,9 @@ namespace ElevenTube_Music.Plugins.DiscordRichPresence
                     new Button() { Label = "Get 11Tube Music", Url = "https://github.com/clover0916/11Tube-Music" }
                 }
             };
-            window.VideoDetailReceived += HandleVideoDetailReceived;
-            window.VideoPaused += HandleVideoPaused;
+            playbackStore.VideoChanged += HandleVideoDetailReceived;
+            playbackStore.PlaybackChanged += HandleVideoPaused;
+            pluginContext.MainWindow.Closed += HandleMainWindowClosed;
 
             client = new DiscordRpcClient(CLIENT_ID);
 
@@ -36,6 +41,16 @@ namespace ElevenTube_Music.Plugins.DiscordRichPresence
             client.Initialize();
 
             client.SetPresence(Presence);
+
+            PlaybackSnapshot snapshot = playbackStore.GetSnapshot();
+            if (snapshot.VideoDetail != null)
+            {
+                HandleVideoDetailReceived(snapshot.VideoDetail);
+            }
+            if (snapshot.PauseState != null)
+            {
+                HandleVideoPaused(snapshot.PauseState);
+            }
         }
 
         private void HandleVideoDetailReceived(Types.VideoDetail videoDetail)
@@ -62,6 +77,10 @@ namespace ElevenTube_Music.Plugins.DiscordRichPresence
 
         private void HandleVideoPaused(IsPaused IsPaused)
         {
+            if (IsPaused == null)
+            {
+                return;
+            }
             if (IsPaused.paused)
             {
                 Presence.Assets.SmallImageKey = "pause";
@@ -83,6 +102,14 @@ namespace ElevenTube_Music.Plugins.DiscordRichPresence
                 };
                 client.SetPresence(Presence);
             }
+        }
+
+        private void HandleMainWindowClosed(object sender, Microsoft.UI.Xaml.WindowEventArgs args)
+        {
+            playbackStore.VideoChanged -= HandleVideoDetailReceived;
+            playbackStore.PlaybackChanged -= HandleVideoPaused;
+            pluginContext.MainWindow.Closed -= HandleMainWindowClosed;
+            client?.Dispose();
         }
     }
 }

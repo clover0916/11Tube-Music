@@ -19,6 +19,8 @@
         <Content Include="Plugins\CinematicLighting\config.json" />
         <Content Include="Plugins\CinematicLighting\index.js" />
         <Content Include="Plugins\DiscordRichPresence\config.json" />
+        <Content Include="Plugins\HRTFSpatialAudio\config.json" />
+        <Content Include="Plugins\HRTFSpatialAudio\index.js" />
         <Content Include="Plugins\MiniPlayer\config.json" />
         <Content Include="Plugins\Overlay\config.json" />
         <Content Include="Plugins\Visualizer\index.js" />

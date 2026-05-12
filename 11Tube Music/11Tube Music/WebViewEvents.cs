@@ -14,18 +14,13 @@ namespace ElevenTube_Music
     public sealed partial class MainWindow : Window
     {
         private bool isStarted = false;
-        public bool IsPaused;
+        private bool pluginsLoaded = false;
         private bool FullScreen = false;
         public bool Volume_Button_IsEnabled { get; set; } = false;
-        public double CurrentTime;
-        public Types.VideoDetail VideoDetail;
-        public Types.Playlist[] Playlists;
-
-        public event Action<Types.VideoDetail> VideoDetailReceived;
-        public event Action<Types.IsPaused> VideoPaused;
 
         private void WebView_CoreWebView2Initialized(WebView2 sender, CoreWebView2InitializedEventArgs args)
         {
+            PlaybackStateStore.Instance.ConfigureDispatcher(DispatcherQueue);
             NavigationViewControl.IsBackEnabled = true;
             WebView.CoreWebView2.Profile.PreferredColorScheme = CoreWebView2PreferredColorScheme.Dark;
             WebView.CoreWebView2.DOMContentLoaded += CoreWebView2_DOMContentLoaded;
@@ -68,11 +63,24 @@ namespace ElevenTube_Music
 
         private async void WebView_NavigationStarting(WebView2 sender, CoreWebView2NavigationStartingEventArgs args)
         {
-            var loader = new ResourceLoader();
-            if (args.Uri.ToLower().Contains("music.youtube.com/") && !isStarted)
+        }
+
+        private async void CoreWebView2_DOMContentLoaded(CoreWebView2 sender, CoreWebView2DOMContentLoadedEventArgs args)
+        {
+            StorageFolder storageFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
+            StorageFile file = await storageFolder.GetFileAsync("preload.js");
+            string preloadScript = await FileIO.ReadTextAsync(file);
+            await sender.ExecuteScriptAsync(preloadScript);
+
+            string currentUri = sender.Source ?? WebView.Source?.AbsoluteUri ?? string.Empty;
+            bool isMusicPage = currentUri.Contains("music.youtube.com/", StringComparison.OrdinalIgnoreCase);
+
+            if (!pluginsLoaded && isMusicPage)
             {
-                isStarted = true;
-                await Load_Plugins(sender);
+                pluginsLoaded = true;
+                var loader = new ResourceLoader();
+                await Load_Plugins(WebView);
+                ReplayLatestPlaybackState();
 
                 await Task.Delay(1000);
                 PluginLoadingText.Text = loader.GetString("Loaded");
@@ -82,15 +90,6 @@ namespace ElevenTube_Music
                 PluginLoadingText.Text = loader.GetString("Plugins");
                 pluginLoadedCheck.Visibility = Visibility.Collapsed;
             }
-
-        }
-
-        private async void CoreWebView2_DOMContentLoaded(CoreWebView2 sender, CoreWebView2DOMContentLoadedEventArgs args)
-        {
-            StorageFolder storageFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
-            StorageFile file = await storageFolder.GetFileAsync("preload.js");
-            string preloadScript = await FileIO.ReadTextAsync(file);
-            await sender.ExecuteScriptAsync(preloadScript);
 
             LoadedStoryboard.Begin();
             await Task.Delay(500);
@@ -105,6 +104,19 @@ namespace ElevenTube_Music
             Bindings.Update();
         }
 
+        private void ReplayLatestPlaybackState()
+        {
+            PlaybackSnapshot snapshot = PlaybackStateStore.Instance.GetSnapshot();
+            if (snapshot.VideoDetail != null)
+            {
+                PlaybackStateStore.Instance.UpdateVideoDetail(snapshot.VideoDetail);
+            }
+            if (snapshot.PauseState != null)
+            {
+                PlaybackStateStore.Instance.UpdatePlaybackState(snapshot.PauseState);
+            }
+        }
+
         private void CoreWebView2_WebMessageReceived(CoreWebView2 sender, CoreWebView2WebMessageReceivedEventArgs args)
         {
             var data = args.WebMessageAsJson;
@@ -115,20 +127,17 @@ namespace ElevenTube_Music
             {
                 Debug.WriteLine(msg.Data.ToString());
                 Types.IsPaused isPaused = JsonConvert.DeserializeObject<Types.IsPaused>(msg.Data.ToString());
-                IsPaused = isPaused.paused;
-                CurrentTime = isPaused.currentTime;
-                VideoPaused?.Invoke(isPaused);
+                PlaybackStateStore.Instance.UpdatePlaybackState(isPaused);
             }
             else if (type == "videoDetail")
             {
                 Types.VideoDetail videoDetail = JsonConvert.DeserializeObject<Types.VideoDetail>(msg.Data.ToString());
-                VideoDetail = videoDetail;
-                VideoDetailReceived?.Invoke(VideoDetail);
+                PlaybackStateStore.Instance.UpdateVideoDetail(videoDetail);
             }
             else if (type == "playlists")
             {
                 Types.Playlist[] playlists = JsonConvert.DeserializeObject<Types.Playlist[]>(msg.Data.ToString());
-                Playlists = playlists;
+                PlaybackStateStore.Instance.UpdatePlaylists(playlists);
                 int i = 0;
                 foreach (var playlist in playlists)
                 {

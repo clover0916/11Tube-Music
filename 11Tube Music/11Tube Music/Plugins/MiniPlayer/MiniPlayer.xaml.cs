@@ -18,7 +18,8 @@ namespace ElevenTube_Music.Plugins.MiniPlayer
 {
     public sealed partial class MiniPlayer : Window
     {
-        private MainWindow mainWindow;
+        private readonly PlaybackStateStore playbackStore;
+        private readonly PluginContext pluginContext;
         private int lastX;
         private int lastY;
         private string HiddenIcon = "\uE973";
@@ -30,16 +31,18 @@ namespace ElevenTube_Music.Plugins.MiniPlayer
         Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration configurationSource;
         MicaController micaController;
 
-        public MiniPlayer(MainWindow window, List<PluginOption> Options)
+        public MiniPlayer(PlaybackStateStore store, PluginContext context, List<PluginOption> Options)
         {
-            mainWindow = window;
+            playbackStore = store;
+            pluginContext = context;
             InitializeComponent();
 
             wsdqHelper = new WindowsSystemDispatcherQueueHelper();
             wsdqHelper.EnsureWindowsSystemDispatcherQueueController();
 
-            mainWindow.VideoDetailReceived += HandleVideoDetailReceived;
-            mainWindow.VideoPaused += HandleVideoPaused;
+            playbackStore.VideoChanged += HandleVideoDetailReceived;
+            playbackStore.PlaybackChanged += HandleVideoPaused;
+            pluginContext.MainWindow.Closed += HandleMainWindowClosed;
             var windowHandle = new IntPtr((long)AppWindow.Id.Value);
 
             AppWindow.MoveAndResize(new RectInt32(10, 10, 400, 120));
@@ -130,6 +133,16 @@ namespace ElevenTube_Music.Plugins.MiniPlayer
             };
 
             SetWindowLong(windowHandle, WindowLongFlags.GWL_EXSTYLE, (IntPtr)(GetWindowLong(windowHandle, WindowLongFlags.GWL_EXSTYLE) | (int)WindowStylesEx.WS_EX_LAYERED | (int)WindowStylesEx.WS_EX_NOACTIVATE));
+
+            PlaybackSnapshot snapshot = playbackStore.GetSnapshot();
+            if (snapshot.VideoDetail != null)
+            {
+                HandleVideoDetailReceived(snapshot.VideoDetail);
+            }
+            if (snapshot.PauseState != null)
+            {
+                HandleVideoPaused(snapshot.PauseState);
+            }
         }
 
         private bool TrySetAcrylicBackdrop()
@@ -241,6 +254,10 @@ namespace ElevenTube_Music.Plugins.MiniPlayer
         private DispatcherTimer timer;
         private void HandleVideoDetailReceived(VideoDetail videoDetail)
         {
+            if (videoDetail == null)
+            {
+                return;
+            }
             SeekBar.Maximum = Convert.ToDouble(videoDetail.lengthSeconds);
             SongName.Text = videoDetail.title;
             ArtistName.Text = videoDetail.author;
@@ -249,21 +266,25 @@ namespace ElevenTube_Music.Plugins.MiniPlayer
 
         private void NextButton_Click(object sender, RoutedEventArgs e)
         {
-            mainWindow.NextMusic();
+            pluginContext.MainWindow.NextMusic();
         }
 
         private void PreviousButton_Click(object sender, RoutedEventArgs e)
         {
-            mainWindow.PreviousMusic();
+            pluginContext.MainWindow.PreviousMusic();
         }
 
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
-            mainWindow.PlayPauseMusic();
+            pluginContext.MainWindow.PlayPauseMusic();
         }
 
         private void HandleVideoPaused(IsPaused IsPaused)
         {
+            if (IsPaused == null)
+            {
+                return;
+            }
             if (IsPaused.paused)
             {
                 SeekBar.Value = IsPaused.currentTime;
@@ -283,8 +304,15 @@ namespace ElevenTube_Music.Plugins.MiniPlayer
         {
             if(Math.Round(Math.Abs(e.NewValue - e.OldValue)) > 1)
             {
-                mainWindow.SetPlayerSeek((int)e.NewValue);
+                pluginContext.MainWindow.SetPlayerSeek((int)e.NewValue);
             }
+        }
+
+        private void HandleMainWindowClosed(object sender, WindowEventArgs args)
+        {
+            playbackStore.VideoChanged -= HandleVideoDetailReceived;
+            playbackStore.PlaybackChanged -= HandleVideoPaused;
+            pluginContext.MainWindow.Closed -= HandleMainWindowClosed;
         }
     }
 }

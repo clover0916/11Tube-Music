@@ -16,9 +16,9 @@ namespace ElevenTube_Music.Plugins.MiniPlayer
     {
         private MiniPlayer miniPlayer;
 
-        public void Main(MainWindow window, List<PluginOption> Options)
+        public void Main(PlaybackStateStore store, PluginContext context, List<PluginOption> options)
         {
-            miniPlayer = new MiniPlayer(window, Options);
+            miniPlayer = new MiniPlayer(store, context, options);
 
             OverlappedPresenter op = OverlappedPresenter.Create();
 
@@ -30,7 +30,7 @@ namespace ElevenTube_Music.Plugins.MiniPlayer
 
             miniPlayer.AppWindow.SetPresenter(op);
 
-            window.Closed += (s, e) => miniPlayer.Close();
+            context.MainWindow.Closed += (s, e) => miniPlayer.Close();
 
             var windowHandle = new IntPtr((long)miniPlayer.AppWindow.Id.Value);
 

@@ -1,0 +1,20 @@
+{
+  "type": "Javascript",
+  "name": "HRTFSpatialAudio",
+  "display_name": "HRTF Spatial Audio",
+  "description": "Applies HRTF-based 3D spatial audio DSP with a binaural room effect.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Clover_Midori",
+    "contact": [
+      {
+        "name": "Twitter",
+        "url": "https://twitter.com/@Clover_0916"
+      },
+      {
+        "name": "Github",
+        "url": "https://github.com/clover0916"
+      }
+    ]
+  }
+}

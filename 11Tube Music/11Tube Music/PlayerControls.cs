@@ -13,16 +13,16 @@ namespace ElevenTube_Music
 {
     public sealed partial class MainWindow : Window
     {
-        public void PauseMusic()
+        public async void PauseMusic()
         {
-            if (!IsPaused)
+            if (PlaybackStateStore.Instance.GetSnapshot().PauseState?.paused == false)
             {
-                PlayPauseMusic();
+                await WebView.ExecuteScriptAsync("window.elevenTubePauseWithFade?.();");
             }
         }
-        public void PlayMusic()
+        public async void PlayMusic()
         {
-            if (IsPaused)
+            if (PlaybackStateStore.Instance.GetSnapshot().PauseState?.paused == true)
             {
                 PlayPauseMusic();
             }
@@ -30,7 +30,7 @@ namespace ElevenTube_Music
 
         public async void PlayPauseMusic()
         {
-            await WebView.ExecuteScriptAsync("document.querySelector('#play-pause-button').click()");
+            await WebView.ExecuteScriptAsync("window.elevenTubeTogglePlaybackWithFade?.();");
         }
 
         public async void PreviousMusic()
